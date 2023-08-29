@@ -1,7 +1,8 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Inter, Cabin_Sketch } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
+const cabinSketch = Cabin_Sketch({ weight: "400", subsets: ["latin"] });
 
 export default function RootLayout({
 	children,
@@ -9,9 +10,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html className={inter.className}>
+		<html className={cabinSketch.className}>
 			<body className="flex flex-col place-items-center">
-				<header className="text-8xl m-5">Garabato</header>
+				<header className="text-8xl m-5 ">Garabato</header>
 
 				{children}
 
