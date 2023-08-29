@@ -1,7 +1,6 @@
 import "./globals.css";
-import { Inter, Cabin_Sketch } from "next/font/google";
+import { Cabin_Sketch } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
 const cabinSketch = Cabin_Sketch({ weight: "400", subsets: ["latin"] });
 
 export default function RootLayout({
@@ -16,8 +15,11 @@ export default function RootLayout({
 
 				{children}
 
-				<footer className="text-xl m-5">
-					Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert
+				<footer className="text-xl m-5 flex flex-col place-items-center">
+					<p>Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert</p>
+					<a href="https://github.com/sergigomezfoto/garabato" target="_blank">
+						<img src="/gh.png" className="w-7" />
+					</a>
 				</footer>
 			</body>
 		</html>
