@@ -8,6 +8,7 @@ const ShowDrawing = () => {
 				<img
 					src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU"
 					alt="dibujo"
+					className="m-5"
 				/>
 				<form>
 					<input type="text" placeholder="Adivina el dibujo" />

@@ -9,11 +9,13 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en">
-			<body className={inter.className}>
-				<header>Header</header>
+		<html className={inter.className}>
+			<body className="flex flex-col place-items-center">
+				<header className="text-8xl m-5">Garabato</header>
+
 				{children}
-				<footer>Footer</footer>
+
+				<footer>Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert</footer>
 			</body>
 		</html>
 	);
