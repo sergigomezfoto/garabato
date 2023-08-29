@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+	/*Modified from https://www.freepik.com/free-vector/variety-colors-hand-painted-background_843572.htm#query=background%20sketch%20color&position=5&from_view=search&track=ais*/
+	background-image: url("../public/background.jpg");
+	background-size: 110%;
+	background-repeat: no-repeat;
+}
