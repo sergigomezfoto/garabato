@@ -1,3 +1,4 @@
+/*Favicon image from: https://www.flaticon.es/icono-gratis/lapiz_3986151?term=pencil&page=1&position=28&origin=search&related_id=3986151*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,3 +9,5 @@ body {
 	background-size: 110%;
 	background-repeat: no-repeat;
 }
+
+/*Border for development purposes: border-solid border-2 border-indigo-600*/

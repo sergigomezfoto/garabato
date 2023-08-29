@@ -15,7 +15,9 @@ export default function RootLayout({
 
 				{children}
 
-				<footer>Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert</footer>
+				<footer className="text-xl m-5">
+					Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert
+				</footer>
 			</body>
 		</html>
 	);
