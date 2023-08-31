@@ -10,8 +10,8 @@ export default function RootLayout({
 }) {
 	return (
 		<html className={cabinSketch.className}>
-			<body className="flex flex-col place-items-center">
-				<header className="text-8xl m-5 ">Garabato</header>
+			<body className="p-8">
+				<header className="text-6xl  md:text-8xl m-5 text-center">Garabato</header>
 
 				{children}
 

@@ -22,8 +22,8 @@ export default function DrawingCanvas() {
 
 	return (
 		<ReactSketchCanvas
-			width={`{width}`}
-			height={`{height}`}
+			width={width}
+			height={height}
 			strokeWidth={5}
 			strokeColor="red"
 		/>

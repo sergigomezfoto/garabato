@@ -44,7 +44,7 @@ export default function UserID() {
         placeholder="Enter your username"
       />
       {/* Debug: Show the secure ID (you'd normally not show this) */}
-      <p>Your secure ID is: {secureID}</p>
+      <p className="break-words">Your secure ID is: {secureID}</p>
       <h2>Draw yourself:</h2>
       <DrawingCanvas/>
     </div>
