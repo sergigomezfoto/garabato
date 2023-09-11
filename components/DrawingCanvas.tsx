@@ -6,6 +6,7 @@ interface DrawingCanvasProps {
   onGetImage: (data: string) => void;
 }
 
+//Ideally this component should be implemented without the Save Portrait button.
 const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onGetImage }) => {
 	const canvasRef = useRef<ReactSketchCanvasRef | null>(null);
 
