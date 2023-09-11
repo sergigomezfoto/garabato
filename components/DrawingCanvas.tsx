@@ -1,31 +1,31 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { ReactSketchCanvas } from "react-sketch-canvas";
+import React, { useRef } from 'react';
+import { ReactSketchCanvas, ReactSketchCanvasRef } from 'react-sketch-canvas';
 
-export default function DrawingCanvas() {
-	const [width, setWidth] = useState("30%");
-	const [height, setHeight] = useState("40%");
-
-	//Effect to handle windows resize, prob not needed for mobile
-	/* useEffect(() => {
-    const handleResize = () => {
-      setWidth(window.innerWidth);
-      setHeight(window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []); */
-
-	return (
-		<ReactSketchCanvas
-			width={width}
-			height={height}
-			strokeWidth={5}
-			strokeColor="red"
-		/>
-	);
+interface DrawingCanvasProps {
+  onGetImage: (data: string) => void;
 }
+
+const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onGetImage }) => {
+	const canvasRef = useRef<ReactSketchCanvasRef | null>(null);
+
+  const handleExport = () => {
+    canvasRef.current!
+      .exportImage('png')
+      .then(data => {
+        onGetImage(data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  return (
+    <div>
+      <ReactSketchCanvas ref={canvasRef} strokeColor="black" strokeWidth={5} />
+      <button onClick={handleExport}>Save Portrait</button>
+    </div>
+  );
+};
+
+export default DrawingCanvas;
