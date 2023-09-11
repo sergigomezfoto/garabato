@@ -28,7 +28,7 @@ export default function Create() {
   };
 
   const handleGoToGame = () => {
-    router.push(`/join/${word}`);
+    router.push(`/join`); //TODO: go directly to join with the room id you just created
   };
 
   return (
