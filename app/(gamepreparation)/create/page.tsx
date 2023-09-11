@@ -1,63 +1,61 @@
-'use client'
-import { useState, useEffect } from 'react';
-import InitialUserForm from '../../../components/InitialUserForm';
-import WaitingRoom from '../../../components/WaitingRoom';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/firebase';
+"use client"
 
-type JoinPageProps = {
-  params: {
-    sala: string;
+import { db } from "@/firebase/firebase";
+import { getDoc,setDoc,doc} from 'firebase/firestore';
+import { useState } from "react";
+import { useRouter } from 'next/navigation'; // Importa useRouter per navegar a la ruta desitjada
+
+export default function Create() {
+  const [word, setWord] = useState('');
+  const [warning, setWarning] = useState('');
+  const [gameCreated, setGameCreated] = useState(false); // Estat per saber si el joc ha estat creat
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setWarning('');
+    setGameCreated(false);
+
+    const gameDocRef = doc(db, 'grabatoTest', word);
+    const gameDocSnapshot = await getDoc(gameDocRef);
+
+    if (!gameDocSnapshot.exists()) {
+      await setDoc(gameDocRef, { created: new Date(), closedRoom: false });
+      setGameCreated(true); // Estableix que el joc ha estat creat
+    } else {
+      setWarning('That game id is already taken');
+    }
   };
-}
 
-const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
-  const [hasJoined, setHasJoined] = useState(false); // Estat per saber si l'usuari s'ha unit a la sala
-  const [salaExists, setSalaExists] = useState<boolean | null>(null); // la sala existeix?
-  const [salaClosed, setSalaClosed] = useState<boolean | null>(null); // estat per comprovar si la sala està tancada
-
-  useEffect(() => {
-    // Comprova si la sala existeix i si està tancada
-    const checkSalaExists = async () => {
-      const salaRef = doc(db, 'grabatoTest', params.sala);
-      const docSnapshot = await getDoc(salaRef);
-      if (docSnapshot.exists()) {
-        setSalaExists(true);
-        setSalaClosed(docSnapshot.data().closedRoom);
-      } else {
-        setSalaExists(false);
-      }
-    };
-
-    checkSalaExists();
-
-  }, [params.sala]);
-
-  if (salaExists === null) {
-    return <div className="min-h-screen flex items-center justify-center">Comprovant sala...</div>;
-  }
-  if (salaExists === false) {
-    return <div className="min-h-screen flex items-center justify-center text-red-500">La sala no existeix</div>;
-  }
-  if (salaClosed) {
-    return <div className="min-h-screen flex items-center justify-center text-red-500">Ja no poden accedir més jugadors</div>;
-  }
+  const handleGoToGame = () => {
+    router.push(`/join/${word}`);
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Sala de joc: <span className="text-blue-500">{params.sala}</span></h1>
-      </div>
-      <div className="flex-grow flex items-center justify-center">
-        {hasJoined
-          ?
-          <WaitingRoom sala={params.sala} />
-          :
-          <InitialUserForm sala={params.sala} onJoin={() => setHasJoined(true)} />
-        }
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      {!gameCreated ? (
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+          <input 
+            type="text" 
+            value={word} 
+            onChange={(e) => setWord(e.target.value)} 
+            className="p-2 border rounded"
+            placeholder="choose a game id"
+          />
+          {warning && <p className="text-red-500">{warning}</p>}
+          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Crear
+          </button>
+        </form>
+      ) : (
+        <div className="flex flex-col items-center space-y-4">
+          <h2 className="text-xl font-bold">Other players should join at "garabato.dev/join" using the id:</h2>
+          <p className="text-green-500 text-2xl">{word}</p>
+          <button onClick={handleGoToGame} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Click Wait Room
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-
-export default JoinPage;
