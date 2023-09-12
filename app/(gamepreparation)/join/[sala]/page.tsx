@@ -34,20 +34,20 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   }, [params.sala]);
 
   if (salaExists === null) {
-    return <div className="min-h-screen flex items-center justify-center">Comprovando sala...</div>;
+    return <div className="flex flex-col items-center justify-center">Comprovando sala...</div>;
   }
   if (salaExists === false) {
-    return <div className="min-h-screen flex items-center justify-center text-red-500">La sala no existe</div>;
+    return <div className="flex flex-col items-center justify-center text-red-500">La sala no existe</div>;
   }
   if (salaClosed) {
-    return <div className="min-h-screen flex items-center justify-center text-red-500">La sala está cerrada</div>;
+    return <div className="flex flex-col items-center justify-center text-red-500">La sala está cerrada</div>;
   }
 
   return (
-    <div className="min-h-screen flex flex-col p-8">
-      <div className="mb-8">
+    <div className="flex flex-col items-center justify-center">
+      {/* <div className="mb-8">
         <h1 className="text-2xl font-bold">Sala de joc: <span className="text-blue-500">{params.sala}</span></h1>
-      </div>
+      </div> */}
       <div className="flex-grow flex items-center justify-center">
         {hasJoined
           ?
