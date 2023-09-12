@@ -46,7 +46,7 @@ const StartGame = () => {
             {playerData && (
                 <>
                     <div className="mb-8 text-center">
-                        <h2 className="text-2xl font-bold mb-4">Benvingut al joc!</h2>
+                        <h2 className="text-2xl font-bold mb-4">Bienvenido!</h2>
                         {/* <p>El teu ID és: <strong>{playerData.playerId}</strong></p> */}
 
                         {/* Mostra les dades del jugador actual basant-nos en l'ID del jugador */}
@@ -60,7 +60,7 @@ const StartGame = () => {
                         ))}
                     </div>
 
-                    <h2 className="text-2xl font-bold mb-4 text-center">Altres Jugadors</h2>
+                    <h2 className="text-2xl font-bold mb-4 text-center">Contrincantes</h2>
 
                     <div className="flex flex-wrap justify-center gap-4">
                         {/* Exclou el jugador actual de la llista d'altres jugadors */}
