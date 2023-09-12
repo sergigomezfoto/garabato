@@ -15,7 +15,7 @@ const getRandomUnusedItem = (set: Set<unknown>, data: string[]) => {
 };
 
 const MINLENGHT = 30;
-const MINNUM = 2;
+const MINNUM = 1;
 export const GET = async (req: Request, { params }: { params: { slug: string } }) => {
     const { slug } = params;
     const num = parseInt(slug[0], 10);

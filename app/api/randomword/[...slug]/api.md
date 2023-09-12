@@ -11,7 +11,7 @@ To retrieve sentences, make a request to the following endpoint:
 
 Where `numberofsentences` is the number of sentences you want to retrieve.
 
-- The minimum number of sentences is set at 2.
+- The minimum number of sentences is set at 1.
 
 ### Limiting Character Count
 
