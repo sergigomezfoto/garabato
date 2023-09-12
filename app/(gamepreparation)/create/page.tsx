@@ -4,6 +4,7 @@ import { db } from "@/firebase/firebase";
 import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { useState } from "react";
 import { useRouter } from 'next/navigation'; // Importa useRouter per navegar a la ruta desitjada
+import SendRoomWhatsapp from '../../../components/SendRoomWhatsapp';
 
 export default function Create() {
   const [word, setWord] = useState('');
@@ -28,7 +29,7 @@ export default function Create() {
   };
 
   const handleGoToGame = () => {
-    router.push(`/join`); //TODO: go directly to join with the room id you just created
+    router.push(`/join/${word}`); //TODO: go directly to join with the room id you just created
   };
 
   return (
@@ -57,6 +58,7 @@ export default function Create() {
         <div className="flex flex-col items-center space-y-4">
           <h2 className="text-xl text-center">Other players should join at<span className="font-bold "> {window.location.origin}/join</span> using the id:</h2>
           <p className="text-green-500 text-2xl">{word}</p>
+          <SendRoomWhatsapp url={`${window.location.origin}/join/${word}`} /> 
           <button onClick={handleGoToGame} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             Click Wait Room
           </button>
