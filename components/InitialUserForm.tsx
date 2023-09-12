@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { db } from '@/firebase/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import DrawingCanvas
- from './DrawingCanvas';
+from './DrawingCanvas';
 interface InitialUserFormProps {
   sala: string;
   onJoin: () => void;
