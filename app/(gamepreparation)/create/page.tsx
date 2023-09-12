@@ -1,7 +1,7 @@
 "use client"
 
 import { db } from "@/firebase/firebase";
-import { getDoc,setDoc,doc} from 'firebase/firestore';
+import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { useState } from "react";
 import { useRouter } from 'next/navigation'; // Importa useRouter per navegar a la ruta desitjada
 
@@ -32,17 +32,23 @@ export default function Create() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center">
       {!gameCreated ? (
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-          <input 
-            type="text" 
-            value={word} 
-            onChange={(e) => setWord(e.target.value)} 
-            className="p-2 border rounded"
-            placeholder="choose a game id"
-          />
-          {warning && <p className="text-red-500">{warning}</p>}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2 text-center" htmlFor="createID">
+              Crea un sala
+            </label>
+            <input
+              id="createID"
+              type="text"
+              value={word}
+              onChange={(e) => setWord(e.target.value)}
+              className="p-2 border rounded"
+              placeholder="nombre de la sala"
+            />
+            {warning && <p className="text-red-500">{warning}</p>}
+          </div>
           <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             Crear
           </button>
