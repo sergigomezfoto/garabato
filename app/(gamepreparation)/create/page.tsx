@@ -55,7 +55,7 @@ export default function Create() {
         </form>
       ) : (
         <div className="flex flex-col items-center space-y-4">
-          <h2 className="text-xl font-bold">Other players should join at "garabato.dev/join" using the id:</h2>
+          <h2 className="text-xl text-center">Other players should join at<span className="font-bold "> {window.location.origin}/join</span> using the id:</h2>
           <p className="text-green-500 text-2xl">{word}</p>
           <button onClick={handleGoToGame} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             Click Wait Room
