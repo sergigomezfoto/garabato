@@ -10,10 +10,15 @@ const HomePage = () => {
             Create
           </button>
         </Link>
-        <Link href="/join">
+        <Link href={{
+            pathname:"/join", query:{
+              sala: "none",
+              master: false, 
+            }
+          }} >
           <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-2">
             Join
-          </button>
+          </button> 
         </Link>
 
       </div>

@@ -23,7 +23,10 @@ const InitialUserForm: React.FC<InitialUserFormProps> = ({ sala, onJoin }) => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log("InitialUserForm", sala);
     e.preventDefault();
+    console.log("UserName",username);
+    console.log("DrawingData",drawingData); //sin datos
     if (username && drawingData) {
       const playersCollectionRef = collection(db, 'grabatoTest', sala, 'players');
       const newPlayerData = {

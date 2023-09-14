@@ -5,28 +5,18 @@ import WaitingRoom from '../../../components/WaitingRoom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase';
 
-const JoinPage: React.FC = () => {
+const JoinPage = ({searchParams}:{searchParams:{sala:string, master:boolean}}) => {
+  console.log("salaId", searchParams.sala);
+  const id = searchParams.sala;
+  const master = searchParams.master;
+  console.log("master", searchParams.master.toString());
   const [salaID, setSalaID] = useState('');
   const [hasJoined, setHasJoined] = useState(false);
-  const [salaExists, setSalaExists] = useState<boolean | null>(null);
-  const [salaClosed, setSalaClosed] = useState<boolean | null>(null);
+  
+  //const [salaClosed, setSalaClosed] = useState<boolean | null>(null);
 
-  const checkSalaExists = async () => {
-    const salaRef = doc(db, 'grabatoTest', salaID);
-    const docSnapshot = await getDoc(salaRef);
-    if (docSnapshot.exists()) {
-      setSalaExists(true);
-      setSalaClosed(docSnapshot.data().closedRoom);
-    } else {
-      setSalaExists(false);
-    }
-  };
 
-  const handleJoinClick = () => {
-    checkSalaExists();
-  };
-
-  if (salaExists === null) {
+  if (master===false ) {
     return (
         <div className="flex flex-col items-center justify-center ">
         <div className="w-full max-w-xs">
@@ -48,7 +38,7 @@ const JoinPage: React.FC = () => {
               <button 
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="button"
-                onClick={handleJoinClick}
+                onClick={()=>setHasJoined(true)}
               >
                 Join
               </button>
@@ -56,26 +46,29 @@ const JoinPage: React.FC = () => {
           </form>
         </div>
       </div>)
-      
   }
 
-  if (salaExists === false) {
-    return <div>Room does not exist</div>;
+  else{
+    return ( 
+      <div>
+        {hasJoined ? (
+          <>
+          <p>Master- {master.toString()}</p>
+          <WaitingRoom sala={id} />
+          </>
+         
+        ) : (
+          <>
+          <p>Master-{master.toString()}</p>
+          <InitialUserForm sala={id} onJoin={() => {setHasJoined(true)} }/>
+          </>
+          
+        )}
+      </div>
+    );
+
   }
-
-  if (salaClosed) {
-    return <div>Room is closed</div>;
-  }
-
-  return (
-    <div>
-      {hasJoined ? (
-        <WaitingRoom sala={salaID} />
-      ) : (
-        <InitialUserForm sala={salaID} onJoin={() => setHasJoined(true)} />
-      )}
-    </div>
-  );
-};
-
+  
+  
+}
 export default JoinPage;
