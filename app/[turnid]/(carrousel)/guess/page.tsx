@@ -1,7 +1,41 @@
+"use client";
+
 import { DoneButtonStructure } from "@/components/DoneButton";
+import { db } from "@/firebase/firebase";
+import { collection, onSnapshot, doc } from "firebase/firestore";
+import { useState, useEffect } from "react";
 
 const ShowDrawing = () => {
-	//This variables will be obtained from DB
+	const sala = "hola";
+
+	const [players, setPlayers] = useState<any[]>([]);
+
+	useEffect(() => {
+		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
+		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
+			const playersData = snapshot.docs.map((doc) => doc.data());
+			setPlayers(playersData);
+		});
+
+		return () => unsubscribePlayers(); // Desubscriure's quan el component es desmonti
+	}, [sala]);
+
+	return (
+		<div className="flex flex-wrap max-w-md justify-center gap-4">
+			{players.map((player, index) => (
+				<div key={index} className="flex flex-col items-center space-y-2">
+					<img
+						src={player.avatar}
+						alt={player.name}
+						className="rounded-full w-16 h-16"
+					/>
+					<span className="text-lg">{player.name}</span>
+				</div>
+			))}
+		</div>
+	);
+
+	/*	//This variables will be obtained from DB
 	const user = "Uri";
 	const image =
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU";
@@ -17,6 +51,8 @@ const ShowDrawing = () => {
 			</form>
 		</div>
 	);
+
+	*/
 };
 
 export default ShowDrawing;

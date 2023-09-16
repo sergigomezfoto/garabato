@@ -22,6 +22,7 @@ const CarrouselLayout = ({ children }: CarrouselLayoutProps) => {
 	return (
 		<div>
 			{children}
+			{turnid}
 			<Timer
 				turnid={turnidNumber}
 				currentRoute={pathname}
