@@ -20,9 +20,9 @@ const Timer: React.FC<TimerProps> = ({
 	const router = useRouter();
 
 	const lastCarrousel = [
-		{ route: `/${turnid}/guess`, timeout: 100000 },
-		{ route: `/${turnid}/vote`, timeout: 100000 },
-		{ route: `/${turnid}/results`, timeout: 100000 },
+		{ route: `/${turnid}/guess`, timeout: 1000000 },
+		{ route: `/${turnid}/vote`, timeout: 1000000 },
+		{ route: `/${turnid}/results`, timeout: 1000000 },
 	];
 
 	const [state, setState] = useState({
