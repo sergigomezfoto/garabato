@@ -1,6 +1,7 @@
 interface DoneButtonProps {
 	text: string;
 	hexCode: string;
+	onClick?: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export const DoneButtonStructure: React.FC<DoneButtonProps> = ({
@@ -8,11 +9,14 @@ export const DoneButtonStructure: React.FC<DoneButtonProps> = ({
 	hexCode,
 }) => {
 	return (
-		<button
-			className="rounded-full shadow-lg px-1 py-0.5"
-			style={{ backgroundColor: hexCode }}
-		>
-			{text}
-		</button>
+		<form onSubmit={onClick}>
+			<button
+				type="submit"
+				className="rounded-full shadow-lg px-1 py-0.5"
+				style={{ backgroundColor: hexCode }}
+			>
+				{text}
+			</button>
+		</form>
 	);
 };
