@@ -36,14 +36,14 @@ const DrawingGuesses = () => {
 		//Create reference to players in DB.
 		const playerDocRef = doc(db, "grabatoTest", sala, "players", playerInTurn);
 
-		// Get the player document data and access the namePlusGuess field
+		// Get the player document data and access the nameGuessVote field
 		getDoc(playerDocRef)
 			.then((docSnapshot) => {
 				if (docSnapshot.exists()) {
 					const playerData = docSnapshot.data();
-					if (playerData && playerData.namePlusGuess) {
-						const namePlusGuesses = playerData.namePlusGuess;
-						setGuesses(namePlusGuesses);
+					if (playerData && playerData.nameGuessVote) {
+						const nameGuessesVote = playerData.nameGuessVote;
+						setGuesses(nameGuessesVote);
 					} else {
 						console.log(
 							"namePlusGuess field does not exist in player document."
@@ -56,22 +56,11 @@ const DrawingGuesses = () => {
 			.catch((error) => {
 				console.error("Error fetching player document:", error);
 			});
-	}, [sala, playerInTurn]);
+	}, [sala]);
 
-	console.log("This is ", guesses);
+	console.log("This is ", guesses[0].guess);
 
 	return (
-		<div className="flex flex-col justify-center items-center">
-			<h1>Guesses for Player {playerInTurn}</h1>
-			<ul>
-				{guesses.map((guess, index) => (
-					<li key={index}>{JSON.stringify(guess)}</li>
-				))}
-			</ul>
-		</div>
-	);
-
-	/*return (
 		<div className="flex flex-col justify-center items-center">
 			<h1>Guesses</h1>
 			<img
@@ -79,11 +68,16 @@ const DrawingGuesses = () => {
 				alt="dibujo"
 				className="m-5"
 			/>
-			<button className="m-3">Guess 1</button>
-			<button className="m-3">Guess 2</button>
-			
+
+			<ul className="flex flex-wrap justify-center items-center gap-4">
+				{guesses.map((guess, index) => (
+					<button className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300">
+						<li key={index}>{guess.guess}</li>
+					</button>
+				))}
+			</ul>
 		</div>
-	);*/
+	);
 };
 
 export default DrawingGuesses;

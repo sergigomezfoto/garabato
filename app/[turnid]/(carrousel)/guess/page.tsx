@@ -22,7 +22,7 @@ const ShowDrawing = () => {
 	//whoamiTurn comes from before
 	const whoamiTurn = 3;
 	//whoamiName comes from before
-	const whoamiName = "mama";
+	const whoamiName = "uri";
 	//Add listener and redirection to artist user.
 
 	const [players, setPlayers] = useState<any[]>([]);
@@ -70,12 +70,12 @@ const ShowDrawing = () => {
 			currentPlayer.playerID
 		);
 
-		const namePlusGuess = { [whoamiName]: guess };
+		const guessInfo = { author: whoamiName, guess: guess, votes: 0 };
 
 		try {
 			//Update the player's document with the guess
 			await updateDoc(playerDocRef, {
-				namePlusGuess: arrayUnion(namePlusGuess),
+				nameGuessVote: arrayUnion(guessInfo),
 			});
 			console.log("Guess saved successfully!");
 			router.push(`/${turnid}/vote`);
