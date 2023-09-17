@@ -12,20 +12,23 @@ export default function Create() {
   const [warning, setWarning] = useState('');
   const [gameCreated, setGameCreated] = useState(false); // Estat per saber si el joc ha estat creat
   const router = useRouter();
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setWarning('');
     setGameCreated(false);
-
+    if (word.trim() === '') {
+      setWarning('Escrive alguna palabra');
+      return; // Si és buit o només espais, no facis res més.
+    }
+    
     const gameDocRef = doc(db, 'grabatoTest', word);
     const gameDocSnapshot = await getDoc(gameDocRef);
-
     if (!gameDocSnapshot.exists()) {
       await setDoc(gameDocRef, { created: new Date(), closedRoom: false });
       setGameCreated(true); // Estableix que el joc ha estat creat
     } else {
-      setWarning('That game id is already taken');
+      setWarning(`Ya hay una sala ${word}`);
     }
   };
 
@@ -62,13 +65,13 @@ export default function Create() {
         </div>
         <div className="py-6">
           <CopyToClipboard textToCopy={`${window.location.origin}/join/${word}`} className="mr-2" />
-           <span className="mx-2"> or </span> 
+           <span className="mx-2"> o </span> 
           <SendRoomWhatsapp url={`${window.location.origin}/join/${word}`} />
         </div>
 
         
         <button onClick={handleGoToGame} className="mt-12 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-          Go to <span className="font-bold " >{word}</span>'s room
+          Ves a la sala <span className="font-bold " >{word}</span>
         </button>
 
       </>

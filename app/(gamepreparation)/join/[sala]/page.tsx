@@ -44,19 +44,21 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
+  <>
+     {/* <div className="flex flex-col items-center justify-center"> */}
       {/* <div className="mb-8">
         <h1 className="text-2xl font-bold">Sala de joc: <span className="text-blue-500">{params.sala}</span></h1>
       </div> */}
-      <div className="flex-grow flex items-center justify-center">
+      {/* <div className="flex-grow flex items-center justify-center"> */}
         {hasJoined
           ?
           <WaitingRoom sala={params.sala} />
           :
           <InitialUserForm sala={params.sala} onJoin={() => setHasJoined(true)} />
         }
-      </div>
-    </div>
+      {/* </div> */}
+    {/* </div> */}
+          </>
   );
 }
 
