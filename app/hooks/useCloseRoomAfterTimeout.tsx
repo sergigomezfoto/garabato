@@ -18,7 +18,7 @@ const useCloseRoomAfterTimeout = (sala:string) => {
         const salaRef = doc(db, 'grabatoTest', sala);
         updateDoc(salaRef, { closedRoom: true });
         // Aquí també pots afegir la redirecció a la ruta desitjada
-      }, 20000); // 20 segons
+      }, 30000); // 20 segons
     });
     
     return () => {

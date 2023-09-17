@@ -46,8 +46,8 @@ const StartGame = () => {
             {playerData && (
                 <>
                     <div className="mb-8 text-center">
-                        <h2 className="text-2xl font-bold mb-4">Bienvenido</h2>
-                        {/* <p>El teu ID és: <strong>{playerData.playerId}</strong></p> */}
+                        <h2 className="text-2xl font-bold mb-4">Bienvenido!</h2>
+                        <p>El teu ID és: <strong>{playerData.playerId}</strong></p>
 
                         {/* Mostra les dades del jugador actual basant-nos en l'ID del jugador */}
                         {otherPlayers.filter(player => player.id === playerData.playerId).map(player => (

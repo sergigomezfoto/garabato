@@ -1,9 +1,9 @@
-'use client'
-import { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { db } from '@/firebase/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import DrawingCanvas
-from './DrawingCanvas';
+import DrawingCanvas from './DrawingCanvas';
+import { ReactSketchCanvasRef } from 'react-sketch-canvas';
+
 interface InitialUserFormProps {
   sala: string;
   onJoin: () => void;
@@ -13,37 +13,43 @@ const InitialUserForm: React.FC<InitialUserFormProps> = ({ sala, onJoin }) => {
   const [username, setUsername] = useState('');
   const [drawingData, setDrawingData] = useState('');
 
-  const handleGetImage = (data: string) => {
-    setDrawingData(data);
-  };
-
-  const styles = {
-    border: '0.0625rem solid #9c9c9c',
-    borderRadius: '0.25rem',
-  };
+  const canvasRef = useRef<ReactSketchCanvasRef | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username && drawingData) {
-      const playersCollectionRef = collection(db, 'grabatoTest', sala, 'players');
-      const newPlayerData = {
-        name: username,
-        avatar: drawingData,  // Store drawing string here
-      };
 
-      const docRef = await addDoc(playersCollectionRef, newPlayerData);
-      const playerData = {
-        playerId: docRef.id,
-        sala: sala,
-      };
-      localStorage.setItem('GarabatoTest', JSON.stringify(playerData));
-      onJoin();
-    }
+    // Exporta el dibuix
+    canvasRef.current!
+      .exportImage('png')
+      .then(data => {
+        setDrawingData(data);
+
+        // Processa el formulari només si hi ha un nom d'usuari i dades de dibuix
+        if (username && data) {
+          const playersCollectionRef = collection(db, 'grabatoTest', sala, 'players');
+          const newPlayerData = {
+            name: username,
+            avatar: data,
+          };
+
+          addDoc(playersCollectionRef, newPlayerData).then(docRef => {
+            const playerData = {
+              playerId: docRef.id,
+              sala: sala,
+            };
+            localStorage.setItem('GarabatoTest', JSON.stringify(playerData));
+            onJoin();
+          });
+        }
+      })
+      .catch(e => {
+        console.log(e);
+      });
   };
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      <DrawingCanvas onGetImage={handleGetImage} />
+      <DrawingCanvas canvasRef={canvasRef} />
       <input
         type="text"
         value={username}

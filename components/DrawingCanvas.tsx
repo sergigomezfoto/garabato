@@ -1,32 +1,16 @@
 "use client";
-import React, { useRef } from 'react';
-import { ReactSketchCanvas, ReactSketchCanvasRef } from 'react-sketch-canvas';
 
+
+import { ReactSketchCanvas, ReactSketchCanvasRef } from 'react-sketch-canvas';
 interface DrawingCanvasProps {
-  onGetImage: (data: string) => void;
+  canvasRef: React.RefObject<ReactSketchCanvasRef>;
 }
 
-//Ideally this component should be implemented without the Save Portrait button.
-const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onGetImage }) => {
-	const canvasRef = useRef<ReactSketchCanvasRef | null>(null);
-
-  const handleExport = () => {
-    canvasRef.current!
-      .exportImage('png')
-      .then(data => {
-        onGetImage(data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
-
+const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef }) => {
   return (
     <div>
       <ReactSketchCanvas ref={canvasRef} strokeColor="black" strokeWidth={5} />
-      <button onClick={handleExport}>Save Portrait</button>
     </div>
   );
 };
-
 export default DrawingCanvas;
