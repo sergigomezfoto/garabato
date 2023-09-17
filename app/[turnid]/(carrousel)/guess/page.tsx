@@ -12,6 +12,10 @@ const ShowDrawing = () => {
 	//Drawing comes from before, for now using random picture.
 	const image =
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU";
+	//whoamiTurn comes from before
+	const whoamiTurn = 2;
+	//whoamiName comes from before
+	const whoamiName = "mama";
 
 	const [players, setPlayers] = useState<any[]>([]);
 	const { turnid } = useParams();
@@ -69,28 +73,34 @@ const ShowDrawing = () => {
 	return (
 		<div className="flex flex-col justify-center items-center">
 			{currentPlayer ? (
-				<div className="flex flex-col items-center space-y-2">
-					<h1>Este es el dibujo de {currentPlayer.name}.</h1>
-					<img src={image} alt="Dibujo" className="m-5" />
-					<h1>Descríbelo con pocas palabras.</h1>
-					<form onSubmit={handleSubmit}>
-						<input
-							className="m-3"
-							type="text"
-							placeholder=""
-							name="pictureGuess"
-							value={guess}
-							onChange={(e) => setGuess(e.target.value)}
-						/>
-						<button
-							type="submit"
-							className="rounded-full shadow-lg px-1 py-0.5"
-							style={{ backgroundColor: "#FFB6C1" }}
-						>
-							¡Hecho!
-						</button>
-					</form>
-				</div>
+				currentPlayer.playerFields.turnid !== whoamiTurn ? (
+					<div className="flex flex-col items-center space-y-2">
+						<h1>Este es el dibujo de {currentPlayer.name}.</h1>
+						<img src={image} alt="Dibujo" className="m-5" />
+						<h1>Descríbelo con pocas palabras.</h1>
+						<form onSubmit={handleSubmit}>
+							<input
+								className="m-3"
+								type="text"
+								placeholder=""
+								name="pictureGuess"
+								value={guess}
+								onChange={(e) => setGuess(e.target.value)}
+							/>
+							<button
+								type="submit"
+								className="rounded-full shadow-lg px-1 py-0.5"
+								style={{ backgroundColor: "#FFB6C1" }}
+							>
+								¡Hecho!
+							</button>
+						</form>
+					</div>
+				) : (
+					<div className="flex flex-col items-center space-y-2">
+						<h1>Eres tu atontao.</h1>
+					</div>
+				)
 			) : (
 				<p>No matching player found for turnid: {turnid}</p>
 			)}
