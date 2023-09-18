@@ -1,18 +1,7 @@
 "use client";
 
 import { fetchPlayersData } from "@/app/hooks/databaseDataRetreival";
-import { db } from "@/firebase/firebase";
-import {
-	arrayUnion,
-	collection,
-	doc,
-	getDoc,
-	getDocs,
-	query,
-	setDoc,
-	updateDoc,
-	where,
-} from "firebase/firestore";
+import { handleUpdate } from "@/app/hooks/handleUpdate";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -30,52 +19,64 @@ const DrawingGuesses = () => {
 	//Add listener and redirection to artist user.
 	//currentPlayer comes from before.
 
-	const [guesses, setGuesses] = useState<any[]>([]);
 	const [players, setPlayers] = useState<any[]>([]);
+	const { turnid } = useParams();
+	const turnIdNumber = parseInt(turnid as string, 10);
+	const router = useRouter();
 
 	useEffect(() => {
 		fetchPlayersData(sala, setPlayers); // Use the utility function to fetch player data
 	}, [sala]);
 
+	//Filter player based on turnIdNumber.
+	const currentPlayer = players.find(
+		(player) => player.playerFields.turnId === turnIdNumber
+	);
+
 	console.log("This is ", players);
 
+	// Handle vote
 	const handleVote = async (vote: string) => {
-		// Get the guess object that the user wants to vote for
-		console.log("avore", vote);
-
-		// Increment the "vote" property of the selected guess in the database
-		const guessDocRef = doc(db, "grabatoTest", sala, "players", whoamiId);
-
-		try {
-			await updateDoc(guessDocRef, {
-				guessVoted: vote,
-			});
-			console.log("Vote updated successfully!");
-		} catch (error) {
-			console.error("Error updating vote:", error);
-		}
+		await handleUpdate(
+			sala,
+			whoamiId,
+			vote,
+			turnIdNumber,
+			"guessVoted",
+			"results",
+			router
+		);
 	};
 
 	return (
 		<div className="flex flex-col justify-center items-center">
-			<h1>Guesses</h1>
-			<img
-				src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU"
-				alt="dibujo"
-				className="m-5"
-			/>
+			{currentPlayer ? (
+				currentPlayer.playerFields.turnId !== whoamiTurn ? (
+					<div className="flex flex-col items-center space-y-2">
+						<h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1>
+						<img src={image} alt="Dibujo" className="m-5" />
+						<h1>Vota lo que crees que es.</h1>
 
-			<ul className="flex flex-wrap justify-center items-center gap-4">
-				{players.map((player, index) => (
-					<button
-						key={index}
-						className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
-						onClick={() => handleVote(player.playerFields.guessMade)}
-					>
-						{player.playerFields.guessMade}
-					</button>
-				))}
-			</ul>
+						<ul className="flex flex-wrap justify-center items-center gap-4">
+							{players.map((player, index) => (
+								<button
+									key={index}
+									className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+									onClick={() => handleVote(player.playerFields.guessMade)}
+								>
+									{player.playerFields.guessMade}
+								</button>
+							))}
+						</ul>
+					</div>
+				) : (
+					<div className="flex flex-col items-center space-y-2">
+						<h1>Eres tu atontao.</h1>
+					</div>
+				)
+			) : (
+				<p>No matching player found for turnid: {turnid}</p>
+			)}
 		</div>
 	);
 };

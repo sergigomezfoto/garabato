@@ -1,15 +1,7 @@
 "use client";
 
 import { fetchPlayersData } from "@/app/hooks/databaseDataRetreival";
-import { db } from "@/firebase/firebase";
-import {
-	arrayUnion,
-	collection,
-	doc,
-	getDocs,
-	setDoc,
-	updateDoc,
-} from "firebase/firestore";
+import { handleUpdate } from "@/app/hooks/handleUpdate";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -41,23 +33,18 @@ const ShowDrawing = () => {
 		(player) => player.playerFields.turnId === turnIdNumber
 	);
 
-	//Handle form submit.
+	// Handle form submit
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
-		//Create reference to player in DB.
-		const playerDocRef = doc(db, "grabatoTest", sala, "players", whoamiId);
-
-		try {
-			//Update the player's document with the guess
-			await updateDoc(playerDocRef, {
-				guessMade: guess,
-			});
-			console.log("Guess saved successfully!");
-			router.push(`/${turnid}/vote`);
-		} catch (error) {
-			console.error("Error saving guess:", error);
-		}
+		await handleUpdate(
+			sala,
+			whoamiId,
+			guess,
+			turnIdNumber,
+			"guessMade",
+			"vote",
+			router
+		);
 	};
 
 	return (
