@@ -17,7 +17,6 @@ export const executeApiGet = async (url: string): Promise<any> => {
         }
 
         return await response.json();
-
     } catch (error) {
         throw error;  // Propaga l'error per gestionar-lo on cridis la funció
     }
