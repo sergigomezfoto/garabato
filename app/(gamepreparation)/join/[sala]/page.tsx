@@ -16,10 +16,12 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   const [hasJoined, setHasJoined] = useState(false); // Estat per saber si l'usuari s'ha unit a la sala
   const [salaExists, setSalaExists] = useState<boolean | null>(null); // la sala existeix?
   const [salaClosed, setSalaClosed] = useState<boolean | null>(null); // estat per comprovar si la sala està tancada
-  const [creator,setCreator]=useState<boolean>(false);
+  const [creator, setCreator] = useState<boolean>(false);
   // Obtenim la URL actual del navegador
-  const currentPath = window.location.pathname;
-
+  let currentPath = '';
+  if (typeof window !== 'undefined') {
+    currentPath = window.location.pathname;
+  }
   useEffect(() => {
 
     if (currentPath === '/create') {
@@ -28,7 +30,7 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
       console.log('No sóc el creador');
     }
   }, []);
-  
+
   useEffect(() => {
     // Comprova si la sala existeix i si està tancada
     const checkSalaExists = async () => {
@@ -57,21 +59,21 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   }
 
   return (
-  <>
-     {/* <div className="flex flex-col items-center justify-center"> */}
+    <>
+      {/* <div className="flex flex-col items-center justify-center"> */}
       {/* <div className="mb-8">
         <h1 className="text-2xl font-bold">Sala de joc: <span className="text-blue-500">{params.sala}</span></h1>
       </div> */}
       {/* <div className="flex-grow flex items-center justify-center"> */}
-        {hasJoined
-          ?
-          <WaitingRoom sala={params.sala} />
-          :
-          <InitialUserForm sala={params.sala} onJoin={() => setHasJoined(true)} master={creator}/>
-        }
+      {hasJoined
+        ?
+        <WaitingRoom sala={params.sala} isMaster={creator}/>
+        :
+        <InitialUserForm sala={params.sala} onJoin={() => setHasJoined(true)} master={creator} />
+      }
       {/* </div> */}
-    {/* </div> */}
-          </>
+      {/* </div> */}
+    </>
   );
 }
 

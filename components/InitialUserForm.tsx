@@ -37,7 +37,8 @@ const InitialUserForm: React.FC<InitialUserFormProps> = ({ sala, onJoin, master 
           addDoc(playersCollectionRef, newPlayerData).then(docRef => {
             const playerData = {
               playerId: docRef.id,
-              sala: sala,
+              sala,
+                
             };
             localStorage.setItem('GarabatoTest', JSON.stringify(playerData));
             onJoin();

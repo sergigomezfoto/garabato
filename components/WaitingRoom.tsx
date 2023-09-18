@@ -1,18 +1,21 @@
 'use client'
 
 import { db } from '@/firebase/firebase';
-import { collection, onSnapshot, doc } from 'firebase/firestore';
+import { collection, onSnapshot, doc,updateDoc } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import useCloseRoomAfterTimeout from '@/app/hooks/useCloseRoomAfterTimeout';
-import Image from 'next/image';
+// import useCloseRoomAfterTimeout from '@/app/hooks/useCloseRoomAfterTimeout';
+//TODO POSAR BOTÓ A MASTER PER TANCAR LA ROOM
 interface WaitingRoomProps {
   sala: string;
+  isMaster: boolean; // Afegim aquesta propietat
 }
 
-const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala }) => {
+const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster  }) => {
+  console.log('isMaster', isMaster);
+  
   // comprovar si s'ha d'tancar la sala després d'un temps d'inactivitat
-  useCloseRoomAfterTimeout(sala);
+  // useCloseRoomAfterTimeout(sala);
   const [players, setPlayers] = useState<any[]>([]);
   const router = useRouter();
   useEffect(() => {
@@ -38,10 +41,14 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala }) => {
     return () => unsubscribePlayers(); // Desubscriure's quan el component es desmonti
   }, [sala]);
 
+  const closeRoom = async () => {
+    const salaRef = doc(db, 'grabatoTest', sala);
+    await updateDoc(salaRef, { closedRoom: true });
+  };
   return (
-    // <div className="min-h-screen flex flex-col justify-center items-center space-y-4 bg-gray-100 p-8">
     <>
         <h2 className="text-2xl font-bold mb-4">Sala de espera</h2>
+
         <div className="flex flex-wrap max-w-md justify-center gap-4">
           {players.map((player, index) => (
             <div key={index} className="flex flex-col items-center space-y-2">
@@ -50,9 +57,10 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala }) => {
             </div>
           ))}
         </div>
+        {isMaster ? (  // Mostrem el botó només si isMaster és true
+          <button onClick={closeRoom}>Cerrar la Sala</button>
+        ) : null}
     </>
-
- 
   );
 }
 
