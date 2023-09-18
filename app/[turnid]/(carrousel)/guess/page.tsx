@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchPlayersData } from "@/app/hooks/databaseDataRetreival";
 import { db } from "@/firebase/firebase";
 import {
 	arrayUnion,
@@ -32,24 +33,7 @@ const ShowDrawing = () => {
 	const router = useRouter();
 
 	useEffect(() => {
-		//Create reference to players in DB.
-		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
-		//Get all players information.
-		getDocs(playersCollectionRef)
-			.then((querySnapshot) => {
-				const playersData = querySnapshot.docs.map((doc) => {
-					// Include the document ID as a property
-					const dataWithId = {
-						playerID: doc.id,
-						playerFields: doc.data(),
-					};
-					return dataWithId;
-				});
-				setPlayers(playersData);
-			})
-			.catch((error) => {
-				console.error("Error fetching players:", error);
-			});
+		fetchPlayersData(sala, setPlayers); // Use the utility function to fetch player data
 	}, [sala]);
 
 	//Filter player based on turnIdNumber.
