@@ -1,43 +1,52 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from "@/firebase/firebase";
 import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 import DrawingCanvas from '@/components/DrawingCanvas';
-import { getDatabase, ref, onValue } from 'firebase/database';
+
 
 type StoredPlayerData = {
   playerId: string;
   sala: string;
-};
 
+};
+interface PlayerData {
+  name: string;
+  score: number;
+  avatar: string;
+  drawing: string;
+  phrase: string;
+  turnId: number;
+}
 const Drawing = () => {
+
   const [player, setPlayer] = useState<StoredPlayerData>({ playerId: "", sala: "" });
-  const [playerData, setPlayerData] = useState();
+  const [playerData, setPlayerData] = useState<PlayerData | undefined>(undefined);
   const canvasRef = useRef<ReactSketchCanvasRef | null>(null);
 
   useEffect(() => {
     const storedData = localStorage.getItem('GarabatoTest');
-    console.log('Stored', storedData);
     if (storedData) {
-      console.log("dentro");
-      setPlayer(JSON.parse(storedData));
-      console.log(player); //Sin datos al inicio?
-
-      //Get user data
-      const dataBase = getDatabase();
-      const playerRef = ref(dataBase, 'grabatoTest/' + `${player.sala}/` + 'players/' + player.playerId)
-      onValue(playerRef, (snapshot: any) => {
-        const data = snapshot.val();
-        //setPlayerData(snapshot.val());
-        //console.log('Player Data:', playerData);
-        console.log(data);
-      });
+      const parsedData = JSON.parse(storedData);
+      setPlayer(parsedData);
+      if (parsedData.playerId) {
+        const playerRef = doc(db, "grabatoTest", parsedData.sala, "players", parsedData.playerId);
+        const fetchData = async () => {
+          const docSnap = await getDoc(playerRef);
+          if (docSnap.exists()) {
+            setPlayerData(docSnap.data() as PlayerData);
+          } else {
+            console.log("No es troba el document!");
+          }
+        };
+        fetchData();
+      }
     }
   }, []);
 
-  const done = async (e: React.FormEvent) => {
+  const handleOnClick = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(player);
     canvasRef.current!
@@ -54,7 +63,6 @@ const Drawing = () => {
             .catch(error => {
               console.log(error);
             })
-
         }
       }
       )
@@ -62,10 +70,10 @@ const Drawing = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-4xl my-6">Your word is: <strong>{'${playerData.phrase}'}</strong></h1>
+      <h1 className="text-4xl my-6">Your word is: <strong>{playerData?.phrase || 'cargando...'}</strong></h1>
       <DrawingCanvas canvasRef={canvasRef} />
-      <i className="my-10">Please, draw for the rest of the players can guess your phrase.</i>
-      <button onClick={done}>
+      <i className="my-10">Dibuja..</i>
+      <button onClick={handleOnClick}>
         Done
       </button>
     </div>

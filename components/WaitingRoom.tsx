@@ -22,7 +22,7 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
     const salaRef = doc(db, 'grabatoTest', sala);
     const unsubscribe = onSnapshot(salaRef, (docSnapshot) => {
       if (docSnapshot.exists() && docSnapshot.data()?.closedRoom) {
-        router.push('/startgame');
+        router.push('/drawing');
       }
     });
     return () => unsubscribe();
@@ -47,7 +47,8 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
           });
         });
         await batchPhrases.commit();
-
+        const salaRef = doc(db, 'grabatoTest', sala);
+        await updateDoc(salaRef, { closedRoom: true });
       } else {
         console.error('El nombre de frases no coincideix amb el nombre de jugadors.');
       }
