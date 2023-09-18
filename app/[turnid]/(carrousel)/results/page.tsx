@@ -1,5 +1,3 @@
-import RootLayout from "../layout";
-
 const ShowVotes = () => {
 	return (
 		<div className="flex flex-col justify-center items-center">
