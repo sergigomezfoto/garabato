@@ -1,9 +1,10 @@
 "use client";
 
-import { fetchPlayersData } from "@/app/hooks/databaseDataRetreival";
-import { handleUpdate } from "@/app/hooks/handleUpdate";
 import { useParams, useRouter } from "next/navigation";
+import React from "react";
 import { useState, useEffect } from "react";
+import { handleUpdate } from "../../../hooks/handleUpdate";
+import { fetchPlayersData } from "../../../hooks/databaseDataRetreival";
 
 const DrawingGuesses = () => {
 	//TODO
