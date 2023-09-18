@@ -7,9 +7,10 @@ import { ReactSketchCanvasRef } from 'react-sketch-canvas';
 interface InitialUserFormProps {
   sala: string;
   onJoin: () => void;
+  master: boolean;
 }
 
-const InitialUserForm: React.FC<InitialUserFormProps> = ({ sala, onJoin }) => {
+const InitialUserForm: React.FC<InitialUserFormProps> = ({ sala, onJoin, master }) => {
   const [username, setUsername] = useState('');
   const [drawingData, setDrawingData] = useState('');
 
@@ -30,6 +31,7 @@ const InitialUserForm: React.FC<InitialUserFormProps> = ({ sala, onJoin }) => {
           const newPlayerData = {
             name: username,
             avatar: data,
+            isMaster: master,
           };
 
           addDoc(playersCollectionRef, newPlayerData).then(docRef => {

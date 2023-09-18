@@ -5,6 +5,7 @@ import WaitingRoom from '../../../../components/WaitingRoom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase';
 
+
 type JoinPageProps = {
   params: {
     sala: string;
@@ -15,7 +16,19 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   const [hasJoined, setHasJoined] = useState(false); // Estat per saber si l'usuari s'ha unit a la sala
   const [salaExists, setSalaExists] = useState<boolean | null>(null); // la sala existeix?
   const [salaClosed, setSalaClosed] = useState<boolean | null>(null); // estat per comprovar si la sala està tancada
+  const [creator,setCreator]=useState<boolean>(false);
+  // Obtenim la URL actual del navegador
+  const currentPath = window.location.pathname;
 
+  useEffect(() => {
+
+    if (currentPath === '/create') {
+      setCreator(true);
+    } else {
+      console.log('No sóc el creador');
+    }
+  }, []);
+  
   useEffect(() => {
     // Comprova si la sala existeix i si està tancada
     const checkSalaExists = async () => {
@@ -54,7 +67,7 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
           ?
           <WaitingRoom sala={params.sala} />
           :
-          <InitialUserForm sala={params.sala} onJoin={() => setHasJoined(true)} />
+          <InitialUserForm sala={params.sala} onJoin={() => setHasJoined(true)} master={creator}/>
         }
       {/* </div> */}
     {/* </div> */}

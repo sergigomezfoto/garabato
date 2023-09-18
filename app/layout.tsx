@@ -28,7 +28,7 @@ export default function RootLayout({
 				<div className="flex flex-col items-center justify-center flex-grow">
 					{children}
 				</div>
-				<footer className="text-sm text-center ">
+				<footer className="text-sm text-center mt-4">
 					<a href="https://github.com/sergigomezfoto/garabato" target="_blank" title="Garabato GitHub repository">
 						<i className="fab fa-github fa-lg"></i>
 					</a>
