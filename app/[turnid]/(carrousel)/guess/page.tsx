@@ -19,15 +19,15 @@ const ShowDrawing = () => {
 	//Drawing comes from before, for now using random picture.
 	const image =
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU";
-	//whoamiTurn comes from before
-	const whoamiTurn = 3;
-	//whoamiName comes from before
+	//These whoami variables come from before
+	const whoamiTurn = 1;
 	const whoamiName = "uri";
+	const whoamiId = "zSvSa9QA7siQHrNOQj8K"; //CXcVHaxEqIYa3bbCUTgH Cyjas3jW8in2YStdypTi
 	//Add listener and redirection to artist user.
 
 	const [players, setPlayers] = useState<any[]>([]);
 	const { turnid } = useParams();
-	const turnidNumber = parseInt(turnid as string, 10);
+	const turnIdNumber = parseInt(turnid as string, 10);
 	const [guess, setGuess] = useState("");
 	const router = useRouter();
 
@@ -52,9 +52,9 @@ const ShowDrawing = () => {
 			});
 	}, [sala]);
 
-	//Filter player based on turnidNumber.
+	//Filter player based on turnIdNumber.
 	const currentPlayer = players.find(
-		(player) => player.playerFields.turnid === turnidNumber
+		(player) => player.playerFields.turnId === turnIdNumber
 	);
 
 	//Handle form submit.
@@ -62,20 +62,12 @@ const ShowDrawing = () => {
 		e.preventDefault();
 
 		//Create reference to player in DB.
-		const playerDocRef = doc(
-			db,
-			"grabatoTest",
-			sala,
-			"players",
-			currentPlayer.playerID
-		);
-
-		const guessInfo = { author: whoamiName, guess: guess, votes: 0 };
+		const playerDocRef = doc(db, "grabatoTest", sala, "players", whoamiId);
 
 		try {
 			//Update the player's document with the guess
 			await updateDoc(playerDocRef, {
-				nameGuessVote: arrayUnion(guessInfo),
+				guessMade: guess,
 			});
 			console.log("Guess saved successfully!");
 			router.push(`/${turnid}/vote`);
@@ -87,9 +79,9 @@ const ShowDrawing = () => {
 	return (
 		<div className="flex flex-col justify-center items-center">
 			{currentPlayer ? (
-				currentPlayer.playerFields.turnid !== whoamiTurn ? (
+				currentPlayer.playerFields.turnId !== whoamiTurn ? (
 					<div className="flex flex-col items-center space-y-2">
-						<h1>Este es el dibujo de {currentPlayer.name}.</h1>
+						<h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1>
 						<img src={image} alt="Dibujo" className="m-5" />
 						<h1>Descríbelo con pocas palabras.</h1>
 						<form onSubmit={handleSubmit}>

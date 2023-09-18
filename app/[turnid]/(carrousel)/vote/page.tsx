@@ -22,43 +22,55 @@ const DrawingGuesses = () => {
 	//Drawing comes from before, for now using random picture.
 	const image =
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU";
-	//whoamiTurn comes from before
-	const whoamiTurn = 3;
-	//whoamiName comes from before
-	const whoamiName = "mama";
+	//These whoami variables come from before
+	const whoamiTurn = 1;
+	const whoamiName = "uri";
+	const whoamiId = "zSvSa9QA7siQHrNOQj8K"; //CXcVHaxEqIYa3bbCUTgH Cyjas3jW8in2YStdypTi
 	//Add listener and redirection to artist user.
 	//currentPlayer comes from before.
-	const playerInTurn = "CXcVHaxEqIYa3bbCUTgH";
 
 	const [guesses, setGuesses] = useState<any[]>([]);
+	const [players, setPlayers] = useState<any[]>([]);
 
 	useEffect(() => {
 		//Create reference to players in DB.
-		const playerDocRef = doc(db, "grabatoTest", sala, "players", playerInTurn);
-
-		// Get the player document data and access the nameGuessVote field
-		getDoc(playerDocRef)
-			.then((docSnapshot) => {
-				if (docSnapshot.exists()) {
-					const playerData = docSnapshot.data();
-					if (playerData && playerData.nameGuessVote) {
-						const nameGuessesVote = playerData.nameGuessVote;
-						setGuesses(nameGuessesVote);
-					} else {
-						console.log(
-							"namePlusGuess field does not exist in player document."
-						);
-					}
-				} else {
-					console.log("Player document does not exist.");
-				}
+		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
+		//Get all players information.
+		getDocs(playersCollectionRef)
+			.then((querySnapshot) => {
+				const playersData = querySnapshot.docs.map((doc) => {
+					// Include the document ID as a property
+					const dataWithId = {
+						playerID: doc.id,
+						playerFields: doc.data(),
+					};
+					return dataWithId;
+				});
+				setPlayers(playersData);
 			})
 			.catch((error) => {
-				console.error("Error fetching player document:", error);
+				console.error("Error fetching players:", error);
 			});
 	}, [sala]);
 
-	console.log("This is ", guesses[0].guess);
+	console.log("This is ", players);
+
+	const handleVote = async (vote: string) => {
+		// Get the guess object that the user wants to vote for
+		console.log("avore", vote);
+
+		// Increment the "vote" property of the selected guess in the database
+		const guessDocRef = doc(db, "grabatoTest", sala, "players", whoamiId);
+
+		try {
+			await updateDoc(guessDocRef, {
+				guessVoted: vote,
+			});
+			console.log("Vote updated successfully!");
+		} catch (error) {
+			console.error("Error updating vote:", error);
+		}
+	};
 
 	return (
 		<div className="flex flex-col justify-center items-center">
@@ -70,9 +82,13 @@ const DrawingGuesses = () => {
 			/>
 
 			<ul className="flex flex-wrap justify-center items-center gap-4">
-				{guesses.map((guess, index) => (
-					<button className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300">
-						<li key={index}>{guess.guess}</li>
+				{players.map((player, index) => (
+					<button
+						key={index}
+						className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+						onClick={() => handleVote(player.playerFields.guessMade)}
+					>
+						{player.playerFields.guessMade}
 					</button>
 				))}
 			</ul>
