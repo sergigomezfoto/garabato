@@ -3,6 +3,13 @@ interface SendRoomWhatsappProps {
     url: string;
     className?: string;
 }
+
+/**
+ * This is a TypeScript React component that renders a button to share a URL on WhatsApp.
+ * @param  - - `url`: The URL that will be shared on WhatsApp.
+ * @returns The code is returning a button component with an onClick event handler that calls the
+ * shareOnWhatsApp function. The button has a class name for styling and displays an icon and text.
+ */
 const SendRoomWhatsapp: React.FC<SendRoomWhatsappProps> = ({ url }) => {
 
 

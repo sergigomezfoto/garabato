@@ -13,6 +13,12 @@ interface WaitingRoomProps {
   isMaster: boolean; // Afegim aquesta propietat
 }
 
+/**
+ * The `WaitingRoom` component is a React functional component that displays a waiting room for a game,
+ * with a list of players and an option to close the room if the user is the master.
+ * @param  - - `sala`: The ID of the room or game session.
+ * @returns The component is returning a JSX fragment that includes the following elements:
+ */
 const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   const players = usePlayersListener(sala);  // hook personalitzat per veure els jugador que hi ha
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,6 +34,10 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
     return () => unsubscribe();
   }, [sala, router]);
 
+  /**
+   * The `closeRoom` function is executed only on the  room creator, 
+   * fetch the phrases from the API and gives an order to turnIds for each player.
+   */
   const closeRoom = async () => {
     setLoading(true);
     try {

@@ -5,6 +5,14 @@ interface CopyToClipboardProps {
     className?: string;
 }
 
+/**
+ * This is a React component that allows users to copy text to the clipboard and displays a message
+ * when the text is successfully copied.
+ * @param  - - `textToCopy`: The text that will be copied to the clipboard when the button is clicked.
+ * @returns The component is returning a button element with an onClick event handler that calls the
+ * handleCopyClick function. The button has a className prop that is used for styling. Inside the
+ * button, there is an icon element from the Font Awesome library and the text "Copia y envia".
+ */
 const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ textToCopy, className }) => {
     const [isCopied, setIsCopied] = useState(false);
 

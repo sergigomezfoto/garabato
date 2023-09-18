@@ -13,6 +13,16 @@ export default function Create() {
   const [gameCreated, setGameCreated] = useState(false); // Estat per saber si el joc ha estat creat
   const router = useRouter();
   
+/**
+ * The handleSubmit function is used to handle form submission in a React component, checking if the room name
+ * is empty or already exists in a database collection before creating a new document in the db.
+ * @param e - The parameter `e` is of type `React.FormEvent<HTMLFormElement>`. It represents the form
+ * event that is triggered when the form is submitted.
+ * @returns If the `word` is empty or only contains spaces, the function will return and not perform
+ * any further actions. Otherwise, it will check if a document with the same `word` exists in the
+ * `grabatoTest` collection. If it doesn't exist, a new document will be created with the current date
+ * and the `closedRoom` field set to `false`. The `setGameCreated
+ */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setWarning('');
@@ -71,7 +81,7 @@ export default function Create() {
 
         
         <button onClick={handleGoToGame} className="mt-12 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-          Ves a la sala <span className="font-bold " >{word}</span>
+          Ir a la sala <span className="font-bold " >{word}</span>
         </button>
 
       </>
