@@ -27,24 +27,26 @@ export default function RootLayout({
 					/>
 				</head>
 				<body>
-					<header className="text-4xl  md:text-6xl m-5 text-center">
-						Garabato
-					</header>
+					<div className="wrapper">
+						<header>
+							Garabato
+						</header>
 
-					<div className="flex flex-col items-center justify-center flex-grow">
-						{children}
+						<main>
+							{children}
+						</main>
+
+						<footer>
+							<p>Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert</p>
+							<a
+								href="https://github.com/sergigomezfoto/garabato"
+								target="_blank"
+								title="Garabato GitHub repository"
+							>
+								<img src="/gh.png" className="w-7" alt="git" />
+							</a>
+						</footer>
 					</div>
-
-					<footer className=" text-center text-s mt-5 flex flex-col place-items-center">
-						<p>Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert</p>
-						<a
-							href="https://github.com/sergigomezfoto/garabato"
-							target="_blank"
-							title="Garabato GitHub repository"
-						>
-							<img src="/gh.png" className="w-7" alt="git" />
-						</a>
-					</footer>
 				</body>
 			</html>
 		</>

@@ -69,7 +69,7 @@ const Drawing = () => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center flex-grow">
       <h1 className="text-4xl my-6">Your word is: <strong>{playerData?.phrase || 'cargando...'}</strong></h1>
       <DrawingCanvas canvasRef={canvasRef} />
       <i className="my-10">Dibuja..</i>
