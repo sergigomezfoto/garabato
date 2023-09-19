@@ -1,6 +1,7 @@
 import { db } from "@/firebase/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import { Dispatch, SetStateAction } from "react";
 
 export async function handleUpdate(
 	sala: string,
@@ -9,7 +10,8 @@ export async function handleUpdate(
 	turnid: number,
 	updateField: string,
 	redirectTo: string,
-	router: string[] | AppRouterInstance
+	router: string[] | AppRouterInstance,
+	setActionStatus: Dispatch<SetStateAction<boolean>>
 ) {
 	//Create reference to player in DB.
 	const docRef = doc(db, "grabatoTest", sala, "players", whoamiId);
@@ -19,7 +21,8 @@ export async function handleUpdate(
 			[updateField]: update,
 		});
 		console.log("Updated successfully!");
-		router.push(`/${turnid}/${redirectTo}`);
+		setActionStatus(true);
+		//router.push(`/${turnid}/${redirectTo}`);
 	} catch (error) {
 		console.error("Error saving:", error);
 	}

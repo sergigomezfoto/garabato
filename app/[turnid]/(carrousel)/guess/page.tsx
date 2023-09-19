@@ -2,6 +2,8 @@
 
 import { fetchPlayersData } from "@/app/hooks/databaseDataRetreival";
 import { handleUpdate } from "@/app/hooks/handleUpdate";
+import { db } from "@/firebase/firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -20,20 +22,32 @@ const ShowDrawing = () => {
 	const whoamiId = "zSvSa9QA7siQHrNOQj8K"; //CXcVHaxEqIYa3bbCUTgH Cyjas3jW8in2YStdypTi
 	//Add listener and redirection to artist user.
 
-	const [players, setPlayers] = useState<any[]>([]);
+	const [actionStatus, setActionStatus] = useState<boolean>(false);
+	const [players, setPlayers] = useState<any>();
+	const [orto, setOrto] = useState<any>();
+	const [currentPlayer, setCurrentPlayer] = useState();
 	const { turnid } = useParams();
 	const turnIdNumber = parseInt(turnid as string, 10);
 	const [guess, setGuess] = useState("");
 	const router = useRouter();
 
 	useEffect(() => {
-		fetchPlayersData(sala, setPlayers); // Use the utility function to fetch player data
+		fetchPlayersData(sala, setPlayers);
 	}, [sala]);
 
+	useEffect(() => {
+		if (players) {
+			const currentPlayer = players.find(
+				(player) => player.playerFields.turnId === turnIdNumber
+			);
+			setCurrentPlayer(currentPlayer);
+			if (currentPlayer.playerFields.turnId === whoamiTurn) {
+				setActionStatus(true);
+			}
+		}
+	}, [players]);
+
 	//Filter player based on turnIdNumber.
-	const currentPlayer = players.find(
-		(player) => player.playerFields.turnId === turnIdNumber
-	);
 
 	// Handle form submit
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -45,14 +59,25 @@ const ShowDrawing = () => {
 			turnIdNumber,
 			"guessMade",
 			"vote",
-			router
+			router,
+			setActionStatus
 		);
 	};
+
+	useEffect(() => {
+		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
+		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
+			const playersDone = snapshot.docs.map((doc) => doc.data().guessMade);
+			setOrto(playersDone);
+		});
+
+		return () => unsubscribePlayers(); // Desubscriure's quan el component es desmonti
+	}, [sala]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
 			{currentPlayer ? (
-				currentPlayer.playerFields.turnId !== whoamiTurn ? (
+				actionStatus === false ? (
 					<div className="flex flex-col items-center space-y-2">
 						<h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1>
 						<img src={image} alt="Dibujo" className="m-5" />
@@ -78,6 +103,12 @@ const ShowDrawing = () => {
 				) : (
 					<div className="flex flex-col items-center space-y-2">
 						<h1>Eres tu atontao.</h1>
+						<h1>List of Players:</h1>
+						<ul>
+							{orto.map((guessito: string) => (
+								<li key={guessito}>{guessito}</li>
+							))}
+						</ul>
 					</div>
 				)
 			) : (
