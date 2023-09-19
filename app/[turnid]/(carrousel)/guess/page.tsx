@@ -5,6 +5,8 @@ import { handleUpdate } from "@/app/hooks/handleUpdate";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
+//A ver esto donde se refleja
+
 const ShowDrawing = () => {
 	//TODO
 	//Room name comes from before
