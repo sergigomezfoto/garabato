@@ -44,8 +44,8 @@ export default function Create() {
   };
 
   const handleGoToGame = () => {
-    localStorage.setItem('GarabatoCreator', 'true')
-    router.push(`/join/${word}`); //TODO: go directly to join with the room id you just created
+    localStorage.setItem('GarabatoCreator', 'true') // Temporary variable to set the creator
+    router.push(`/join/${word}`); 
   };
 
   return (

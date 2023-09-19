@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import InitialUserForm from '../../../../components/InitialUserForm';
 import WaitingRoom from '../../../../components/WaitingRoom';
 import { doc, getDoc } from 'firebase/firestore';
@@ -17,17 +17,12 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   const [salaExists, setSalaExists] = useState<boolean | null>(null); // la sala existeix?
   const [salaClosed, setSalaClosed] = useState<boolean | null>(null); // estat per comprovar si la sala està tancada
   const [creator, setCreator] = useState<boolean>(false);
-  
-  /* // Obtenim la URL actual del navegador, ASI NO FUNCIONA CREO
-  let currentPath = '';
-  if (typeof window !== 'undefined') {
-    currentPath = window.location.pathname;
-  } */
+  const [creatorInit, setCreatorInit] = useState<boolean>(false)
   
   useEffect(() => {
     setCreator('true' === localStorage.getItem('GarabatoCreator'))
-    console.log(localStorage.getItem('GarabatoCreator'))
     localStorage.removeItem('GarabatoCreator')
+    setCreatorInit(true)
   }, []);
 
   useEffect(() => {    
@@ -42,10 +37,10 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
         setSalaExists(false);
       }
     };
-
     checkSalaExists();
 
-  }, [params.sala]);
+  }, []);
+
 
   if (salaExists === null) {
     return <div className="flex flex-col items-center justify-center">Comprovando sala...</div>;
@@ -55,6 +50,9 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   }
   if (salaClosed) {
     return <div className="flex flex-col items-center justify-center text-red-500">La sala está cerrada</div>;
+  }
+  if (!creatorInit) {
+    return <div className="flex flex-col items-center justify-center text-red-500">Comprobando creator</div>;
   }
 
   return (
