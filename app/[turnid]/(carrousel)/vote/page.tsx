@@ -72,7 +72,7 @@ const DrawingGuesses = () => {
 					</div>
 				) : (
 					<div className="flex flex-col items-center space-y-2">
-						<h1>Eres tu atontao.</h1>
+						<h1>El resto de jugadores esta poniendo titulo a tu dibujo.</h1>
 					</div>
 				)
 			) : (

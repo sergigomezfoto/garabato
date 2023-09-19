@@ -17,21 +17,20 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   const [salaExists, setSalaExists] = useState<boolean | null>(null); // la sala existeix?
   const [salaClosed, setSalaClosed] = useState<boolean | null>(null); // estat per comprovar si la sala està tancada
   const [creator, setCreator] = useState<boolean>(false);
-  // Obtenim la URL actual del navegador
+  
+  /* // Obtenim la URL actual del navegador, ASI NO FUNCIONA CREO
   let currentPath = '';
   if (typeof window !== 'undefined') {
     currentPath = window.location.pathname;
-  }
+  } */
+  
   useEffect(() => {
-
-    if (currentPath === '/create') {
-      setCreator(true);
-    } else {
-      console.log('No sóc el creador');
-    }
+    setCreator('true' === localStorage.getItem('GarabatoCreator'))
+    console.log(localStorage.getItem('GarabatoCreator'))
+    localStorage.removeItem('GarabatoCreator')
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {    
     // Comprova si la sala existeix i si està tancada
     const checkSalaExists = async () => {
       const salaRef = doc(db, 'grabatoTest', params.sala);

@@ -1,28 +1,24 @@
-type Game = {
-    id: number;
-    status: boolean;
-    current_path: string; 
+import { Timestamp } from "firebase/firestore";
+
+type PossiblePaths = 'create' | 'join' | 'drawing' | 'startgame' | 'guess' | 'vote' | 'results' | 'score' | 'finalresults';
+
+type Room = {
+    room: string;
+    closedRoom: boolean;
+    created: Timestamp;
+    game_current_path: string;
 }
 
-type User = {
+type Player = {
     id: number;
-    name: string;
-    portrait_svg: string //max 1MB
-    master: boolean;
-    local_current_path: string;
-    score: number;
-}
-
-type Drawing = {
-    id: number;
-    drawing_svg: string; //max 1MB
-    original_title: string;
-    guess: Guess;
-    
-}
-
-type Guess = { //ex Celeste, space cow, [Oriol, Jordi]
-    author: string;
-    phrase: string;
-    votes: string[];
+    isMaster: boolean;
+    local_current_path: PossiblePaths;
+    name?: string;
+    avatar?: string //max 1MB
+    drawing?: string
+    phrase?: string;
+    turnId?: number;
+    guessVoted?: boolean;
+    guessMade?: boolean;
+    score?: number
 }

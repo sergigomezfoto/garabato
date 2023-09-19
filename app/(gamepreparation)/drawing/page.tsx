@@ -21,6 +21,7 @@ interface PlayerData {
   phrase: string;
   turnId: number;
 }
+
 const Drawing = () => {
 
   const [player, setPlayer] = useState<StoredPlayerData>({ playerId: "", sala: "" });
