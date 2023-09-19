@@ -86,18 +86,12 @@ const Drawing = () => {
 
   return (
     <>
-      {/* <div className="flex flex-col items-center flex-grow"> */}
       <h1 className="text-2xl my-6"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
       <DrawingCanvas canvasRef={canvasRef} />
       <i className="mb-4">¡Dibuja la frase que te ha tocado!</i>
-
-      {/* <button onClick={handleOnClick} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-2">
-        ¡Ya está!
-      </button> */}
       <ButtonPromise onClick={handleOnClick}>
         ¡Enviar dibujo!
-      </ButtonPromise>
-
+     </ButtonPromise>
     </>
 
   );

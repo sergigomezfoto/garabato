@@ -24,37 +24,41 @@ const ButtonPromise: React.FC<ButtonPromiseProps> = ({ color = 'blue', text, typ
         }
     };
 
-    let displayText;
+    let displaySpinner = false;
     let bgColor;
+    let textContent = children ? children : text;
     switch (state) {
         case 'loading':
-            displayText = (<span className="spinner" />); // Reemplaça amb el teu spinner blanc
+            displaySpinner = true;
             bgColor = `bg-${color}-500 hover:bg-${color}-700`;
             break;
         case 'success':
-            displayText = "¡Hecho!";
+            // displaySpinner = true;
+            textContent = "¡Hecho!";
             bgColor = "bg-green-500";
             break;
         case 'error':
-            displayText = "¡Error!";
+            // displaySpinner = true;
+            textContent = "¡Error!";
             bgColor = "bg-red-500";
             break;
         default:
-            displayText = children ? children : text;
             bgColor = `bg-${color}-500 hover:bg-${color}-700`;
             break;
     }
 
-    const baseClass = `${bgColor} text-white font-bold py-2 px-4 rounded m-2`;
+    const baseClass = `flex items-center justify-center ${bgColor} text-white font-bold py-2 px-4 rounded m-2`;
+
 
     return (
-        <button 
+        <button
             type={type}
-            className={baseClass} 
+            className={baseClass}
             onClick={handleClick}
             disabled={state === 'loading' || state === 'success'}
         >
-            {displayText}
+            <span className={`button-text ${displaySpinner ? 'hidden-button' : ''}`}>{textContent}</span>
+            {displaySpinner && <span className="button-spinner"></span>}
         </button>
     );
 };

@@ -1,11 +1,11 @@
 'use client'
 
 import { db } from '@/firebase/firebase';
-import { collection, onSnapshot, doc, updateDoc, writeBatch } from 'firebase/firestore';
-import { useState, useEffect } from 'react';
+import { onSnapshot, doc, updateDoc, writeBatch } from 'firebase/firestore';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { executeApiGet } from '@/app/helpers/executApiGet';
-import LoadingText from './LoadingText';
+
 import SinglePlayer from './SinglePlayer';
 import usePlayersListener from '@/app/hooks/usePlayerListener';
 import ButtonPromise from './design/ButtonPromise';
@@ -22,7 +22,6 @@ interface WaitingRoomProps {
  */
 const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   const players = usePlayersListener(sala);  // hook personalitzat per veure els jugador que hi ha
-  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -40,7 +39,7 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
    * fetch the phrases from the API and gives an order to turnIds for each player.
    */
   const handleOnClick = async () => {
-    setLoading(true);
+
     try {
       const apiUrl = `${window.location.origin}/api/randomword/${players.length}/30`;
       const data = await executeApiGet(apiUrl);
@@ -65,14 +64,11 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
       }
     } catch (error) {
       console.error('Hi ha hagut un error:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <>
-      {loading && <LoadingText text="preparando el juego..." />}
       <h2 className="text-2xl font-bold mb-4">jugadores</h2>
       <div className="flex flex-wrap max-w-md justify-center gap-4">
         {players.map((player, index) => (
@@ -80,9 +76,6 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
         ))}
       </div>
       {isMaster &&
-        // <button onClick={handleOnClick} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-2">
-        //   Cerrar sala
-        // </button>
         <ButtonPromise onClick={handleOnClick}>
           Cerrar sala
         </ButtonPromise>

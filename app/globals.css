@@ -112,6 +112,21 @@ footer {
   margin-bottom: 20px;
 }
 
+.hidden-button {
+  display: none;
+}
+.button-spinner {
+  display: inline-block;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid white;
+  width: 24px;
+  height: 24px;
+  animation: spin2 1s linear infinite;       /* Animació per fer girar el Spinner */
+}
 
-
+@keyframes spin2 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 /*Border for development purposes: border-solid border-2 border-indigo-600*/
