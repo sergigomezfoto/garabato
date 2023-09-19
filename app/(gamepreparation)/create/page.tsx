@@ -6,23 +6,24 @@ import { useState } from "react";
 import { useRouter } from 'next/navigation'; // Importa useRouter per navegar a la ruta desitjada
 import SendRoomWhatsapp from '../../../components/SendRoomWhatsapp';
 import CopyToClipboard from '../../../components/CopyToClipboard';
+import Button from '../../../components/design/Button';
 
 export default function Create() {
   const [word, setWord] = useState('');
   const [warning, setWarning] = useState('');
   const [gameCreated, setGameCreated] = useState(false); // Estat per saber si el joc ha estat creat
   const router = useRouter();
-  
-/**
- * The handleSubmit function is used to handle form submission in a React component, checking if the room name
- * is empty or already exists in a database collection before creating a new document in the db.
- * @param e - The parameter `e` is of type `React.FormEvent<HTMLFormElement>`. It represents the form
- * event that is triggered when the form is submitted.
- * @returns If the `word` is empty or only contains spaces, the function will return and not perform
- * any further actions. Otherwise, it will check if a document with the same `word` exists in the
- * `grabatoTest` collection. If it doesn't exist, a new document will be created with the current date
- * and the `closedRoom` field set to `false`. The `setGameCreated
- */
+
+  /**
+   * The handleSubmit function is used to handle form submission in a React component, checking if the room name
+   * is empty or already exists in a database collection before creating a new document in the db.
+   * @param e - The parameter `e` is of type `React.FormEvent<HTMLFormElement>`. It represents the form
+   * event that is triggered when the form is submitted.
+   * @returns If the `word` is empty or only contains spaces, the function will return and not perform
+   * any further actions. Otherwise, it will check if a document with the same `word` exists in the
+   * `grabatoTest` collection. If it doesn't exist, a new document will be created with the current date
+   * and the `closedRoom` field set to `false`. The `setGameCreated
+   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setWarning('');
@@ -31,7 +32,7 @@ export default function Create() {
       setWarning('Escrive alguna palabra');
       return; // Si és buit o només espais, no facis res més.
     }
-    
+
     const gameDocRef = doc(db, 'grabatoTest', word);
     const gameDocSnapshot = await getDoc(gameDocRef);
     if (!gameDocSnapshot.exists()) {
@@ -64,9 +65,7 @@ export default function Create() {
             />
             {warning && <p className="text-red-500">{warning}</p>}
           </div>
-          <button type="submit" className="px-2 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-            Crear
-          </button>
+          <Button text="Crear" type="submit" />
         </form>
       ) : (<>
         <div className="flex flex-col items-center space-y-2">
@@ -75,14 +74,13 @@ export default function Create() {
         </div>
         <div className="py-6">
           <CopyToClipboard textToCopy={`${window.location.origin}/join/${word}`} className="mr-2" />
-           <span className="mx-2"> o </span> 
+          <span className="mx-2"> o </span>
           <SendRoomWhatsapp url={`${window.location.origin}/join/${word}`} />
         </div>
 
-        
-        <button onClick={handleGoToGame} className="mt-12 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+        <Button onClick={handleGoToGame}>
           Ir a la sala <span className="font-bold " >{word}</span>
-        </button>
+        </Button>
 
       </>
       )}

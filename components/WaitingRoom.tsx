@@ -8,6 +8,7 @@ import { executeApiGet } from '@/app/helpers/executApiGet';
 import LoadingText from './LoadingText';
 import SinglePlayer from './SinglePlayer';
 import usePlayersListener from '@/app/hooks/usePlayerListener';
+import ButtonPromise from './design/ButtonPromise';
 interface WaitingRoomProps {
   sala: string;
   isMaster: boolean; // Afegim aquesta propietat
@@ -38,7 +39,7 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
    * The `closeRoom` function is executed only on the  room creator, 
    * fetch the phrases from the API and gives an order to turnIds for each player.
    */
-  const closeRoom = async () => {
+  const handleOnClick = async () => {
     setLoading(true);
     try {
       const apiUrl = `${window.location.origin}/api/randomword/${players.length}/30`;
@@ -72,13 +73,20 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   return (
     <>
       {loading && <LoadingText text="preparando el juego..." />}
-      <h2 className="text-2xl font-bold mb-4">Sala de espera</h2>
+      <h2 className="text-2xl font-bold mb-4">jugadores</h2>
       <div className="flex flex-wrap max-w-md justify-center gap-4">
         {players.map((player, index) => (
           <SinglePlayer key={index} avatar={player.avatar} name={player.name} />
         ))}
       </div>
-      {isMaster && <button onClick={closeRoom}>Cerrar la Sala</button>}
+      {isMaster &&
+        // <button onClick={handleOnClick} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-2">
+        //   Cerrar sala
+        // </button>
+        <ButtonPromise onClick={handleOnClick}>
+          Cerrar sala
+        </ButtonPromise>
+      }
     </>
   );
 };

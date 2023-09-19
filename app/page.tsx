@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Button from '../components/design/Button';
 
 const HomePage = () => {
   return (
@@ -7,15 +8,9 @@ const HomePage = () => {
       <p>pequeñísimas instrucciones</p>
       <div className="mt-4">
         <Link href="/create">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-2">
-            crear sala
-          </button>
+          <Button text="crea una sala"/>
         </Link>
-        {/* <Link href="/join">
-          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-2">
-            Join
-          </button>
-        </Link> */}
+
 
       </div>
     </>
