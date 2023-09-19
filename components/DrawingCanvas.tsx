@@ -30,7 +30,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef }) => {
   return (
 //HACK A ELS TIPUS DE REACTSKETCHCANVAS HEIGHT DEMANA UN STRING PERÒ "100%" NO FUNCIONA NOMÉS FUNCIONA POSAR QUALSEVOL NÚMERO AL PROP HEIGHT. TYOUS CAMBIAT A streing|number
       // @ts-ignore <- Esto elimina el error de typescript con el tipo de height
-      <ReactSketchCanvas ref={canvasRef} strokeColor="black" strokeWidth={5} height="100%" width="100%" className="flex-grow mb-4" /> 
+      <ReactSketchCanvas ref={canvasRef} strokeColor="black" strokeWidth={5} height="100%" width="100%" className="flex-grow mb-4 global-canvas" /> 
 
   );
 };

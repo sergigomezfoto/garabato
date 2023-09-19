@@ -26,8 +26,8 @@ export default function RootLayout({
 						href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
 					/>
 				</head>
-				<body className="p-8">
-					<header className="text-6xl  md:text-8xl m-5 text-center">
+				<body>
+					<header className="text-4xl  md:text-6xl m-5 text-center">
 						Garabato
 					</header>
 
@@ -35,14 +35,14 @@ export default function RootLayout({
 						{children}
 					</div>
 
-					<footer className="text-xl m-5 flex flex-col place-items-center">
+					<footer className=" text-center text-s mt-5 flex flex-col place-items-center">
 						<p>Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert</p>
 						<a
 							href="https://github.com/sergigomezfoto/garabato"
 							target="_blank"
 							title="Garabato GitHub repository"
 						>
-							<img src="/gh.png" className="w-7" />
+							<img src="/gh.png" className="w-7" alt="git" />
 						</a>
 					</footer>
 				</body>
