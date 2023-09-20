@@ -44,7 +44,6 @@ export default function Create() {
   };
 
   const handleGoToGame = () => {
-    localStorage.setItem('GarabatoCreator', 'true') // Temporary variable to set the creator
     router.push(`/join/${word}`); 
   };
 

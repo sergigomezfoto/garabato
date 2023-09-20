@@ -16,13 +16,19 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   const [hasJoined, setHasJoined] = useState(false); // Estat per saber si l'usuari s'ha unit a la sala
   const [salaExists, setSalaExists] = useState<boolean | null>(null); // la sala existeix?
   const [salaClosed, setSalaClosed] = useState<boolean | null>(null); // estat per comprovar si la sala està tancada
-  const [creator, setCreator] = useState<boolean>(false);
-  const [creatorInit, setCreatorInit] = useState<boolean>(false)
-  
+  const [isMaster, setIsMaster] = useState<boolean>(false);
+
+  let currentPath = '';
+  if (typeof window !== 'undefined') {
+    currentPath = window.location.pathname;
+  }
   useEffect(() => {
-    setCreator('true' === localStorage.getItem('GarabatoCreator'))
-    localStorage.removeItem('GarabatoCreator')
-    setCreatorInit(true)
+    if (currentPath === '/create') {
+      console.log('Sóc el creador');
+      setIsMaster(true);
+    } else {
+      console.log('No sóc el creador');
+    }
   }, []);
 
   useEffect(() => {    
@@ -51,17 +57,13 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   if (salaClosed) {
     return <div className="flex flex-col items-center justify-center text-red-500">La sala está cerrada</div>;
   }
-  if (!creatorInit) {
-    return <div className="flex flex-col items-center justify-center text-red-500">Comprobando creator</div>;
-  }
-
   return (
     <>
       {hasJoined
         ?
-        <WaitingRoom sala={params.sala} isMaster={creator}/>
+        <WaitingRoom sala={params.sala} isMaster={isMaster}/>
         :
-        <InitialUserForm sala={params.sala} onJoin={() => setHasJoined(true)} master={creator} />
+        <InitialUserForm sala={params.sala} onJoin={() => setHasJoined(true)} master={isMaster} />
       }
     </>
   );
