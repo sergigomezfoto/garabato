@@ -7,8 +7,6 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-//A ver esto donde se refleja
-
 const ShowDrawing = () => {
 	//TODO
 	//Room name comes from before
@@ -17,14 +15,17 @@ const ShowDrawing = () => {
 	const image =
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU";
 	//These whoami variables come from before
-	const whoamiTurn = 1;
 	const whoamiName = "uri";
-	const whoamiId = "zSvSa9QA7siQHrNOQj8K"; //CXcVHaxEqIYa3bbCUTgH Cyjas3jW8in2YStdypTi
+
+	//const whoamiId = "CXcVHaxEqIYa3bbCUTgH";const whoamiTurn = 1;
+	//const whoamiId = "Cyjas3jW8in2YStdypTi"; const whoamiTurn = 2;
+	const whoamiId = "zSvSa9QA7siQHrNOQj8K";
+	const whoamiTurn = 3;
 	//Add listener and redirection to artist user.
 
 	const [actionStatus, setActionStatus] = useState<boolean>(false);
 	const [players, setPlayers] = useState<any>();
-	const [orto, setOrto] = useState<any>();
+	const [actionList, setActionList] = useState<any>();
 	const [currentPlayer, setCurrentPlayer] = useState();
 	const { turnid } = useParams();
 	const turnIdNumber = parseInt(turnid as string, 10);
@@ -38,7 +39,8 @@ const ShowDrawing = () => {
 	useEffect(() => {
 		if (players) {
 			const currentPlayer = players.find(
-				(player) => player.playerFields.turnId === turnIdNumber
+				(player: { playerFields: { turnId: number } }) =>
+					player.playerFields.turnId === turnIdNumber
 			);
 			setCurrentPlayer(currentPlayer);
 			if (currentPlayer.playerFields.turnId === whoamiTurn) {
@@ -52,27 +54,24 @@ const ShowDrawing = () => {
 	// Handle form submit
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		await handleUpdate(
-			sala,
-			whoamiId,
-			guess,
-			turnIdNumber,
-			"guessMade",
-			"vote",
-			router,
-			setActionStatus
-		);
+		await handleUpdate(sala, whoamiId, guess, "guessMade", setActionStatus);
 	};
 
 	useEffect(() => {
 		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
 		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
-			const playersDone = snapshot.docs.map((doc) => doc.data().guessMade);
-			setOrto(playersDone);
+			const playersDone = snapshot.docs
+				.map((doc) => doc.data().guessMade)
+				.filter((value) => value !== undefined);
+			setActionList(playersDone);
 		});
+		console.log(players?.length, actionList?.length);
+		if (actionStatus === true && players?.length === actionList?.length + 1) {
+			router.push(`/${turnIdNumber}/vote`);
+		}
 
-		return () => unsubscribePlayers(); // Desubscriure's quan el component es desmonti
-	}, [sala]);
+		return () => unsubscribePlayers();
+	}, [sala, actionStatus]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
@@ -105,7 +104,7 @@ const ShowDrawing = () => {
 						<h1>Eres tu atontao.</h1>
 						<h1>List of Players:</h1>
 						<ul>
-							{orto.map((guessito: string) => (
+							{actionList.map((guessito: string) => (
 								<li key={guessito}>{guessito}</li>
 							))}
 						</ul>
