@@ -17,40 +17,43 @@ const ShowDrawing = () => {
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU";
 	//These whoami variables come from before
 	const whoamiName = "uri";
-
 	//const whoamiId = "CXcVHaxEqIYa3bbCUTgH";const whoamiTurn = 1;
 	//const whoamiId = "Cyjas3jW8in2YStdypTi"; const whoamiTurn = 2;
 	const whoamiId = "zSvSa9QA7siQHrNOQj8K";
 	const whoamiTurn = 3;
 	//Add listener and redirection to artist user.
 
+	const { turnid } = useParams();
+	const turnIdNumber = parseInt(turnid as string, 10);
+	const router = useRouter();
+
 	const [actionStatus, setActionStatus] = useState<boolean>(false);
 	const [players, setPlayers] = useState<any>();
 	const [actionList, setActionList] = useState<any>();
 	const [currentPlayer, setCurrentPlayer] = useState();
-	const { turnid } = useParams();
-	const turnIdNumber = parseInt(turnid as string, 10);
 	const [guess, setGuess] = useState("");
-	const router = useRouter();
 
+	//Fetch all players data.
 	useEffect(() => {
 		fetchPlayersData(sala, setPlayers);
 	}, [sala]);
 
+	//Filter player based on turnIdNumber.
 	useEffect(() => {
 		if (players) {
 			const currentPlayer = players.find(
 				(player: { playerFields: { turnId: number } }) =>
 					player.playerFields.turnId === turnIdNumber
 			);
-			setCurrentPlayer(currentPlayer);
-			if (currentPlayer.playerFields.turnId === whoamiTurn) {
-				setActionStatus(true);
+
+			if (currentPlayer) {
+				setCurrentPlayer(currentPlayer);
+				if (currentPlayer.playerFields.turnId === whoamiTurn) {
+					setActionStatus(true);
+				}
 			}
 		}
 	}, [players]);
-
-	//Filter player based on turnIdNumber.
 
 	// Handle form submit
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -58,6 +61,7 @@ const ShowDrawing = () => {
 		await handleUpdate(sala, whoamiId, guess, "guessMade", setActionStatus);
 	};
 
+	//Listen to databse and control player status
 	useEffect(() => {
 		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
 		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
@@ -66,7 +70,6 @@ const ShowDrawing = () => {
 				.filter((value) => value !== undefined);
 			setActionList(playersDone);
 		});
-		console.log(players?.length, actionList?.length);
 		if (actionStatus === true && players?.length === actionList?.length + 1) {
 			router.push(`/${turnIdNumber}/vote`);
 		}
@@ -90,6 +93,8 @@ const ShowDrawing = () => {
 								name="pictureGuess"
 								value={guess}
 								onChange={(e) => setGuess(e.target.value)}
+								autoComplete="off"
+								required
 							/>
 							<button
 								type="submit"
@@ -101,22 +106,13 @@ const ShowDrawing = () => {
 						</form>
 					</div>
 				) : (
-					<div className="flex flex-col items-center space-y-2">
-						<h1>Eres tu atontao.</h1>
-						<h1>List of Players:</h1>
-						<ul>
-							{actionList.map((guessito: string) => (
-								<li key={guessito}>{guessito}</li>
-							))}
-						</ul>
-						<ProgressBar
-							totalPlayers={players.length}
-							playersReady={actionList.length + 1}
-						/>
-					</div>
+					<ProgressBar
+						totalPlayers={players.length}
+						playersReady={actionList.length + 1}
+					/>
 				)
 			) : (
-				<p>No matching player found for turnid: {turnid}</p>
+				<p>No se ha encontrado ningun jugador con el turnid: {turnid}</p>
 			)}
 		</div>
 	);
