@@ -14,7 +14,7 @@ type Player = {
     isMaster: boolean;
     local_current_path: PossiblePaths;
     name?: string;
-    avatar?: string //max 1MB
+    avatar?: string
     drawing?: string
     phrase?: string;
     turnId?: number;
