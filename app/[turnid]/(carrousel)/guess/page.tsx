@@ -2,6 +2,7 @@
 
 import { fetchPlayersData } from "@/app/hooks/databaseDataRetreival";
 import { handleUpdate } from "@/app/hooks/handleUpdate";
+import ProgressBar from "@/components/ProgressBar";
 import { db } from "@/firebase/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
@@ -108,6 +109,10 @@ const ShowDrawing = () => {
 								<li key={guessito}>{guessito}</li>
 							))}
 						</ul>
+						<ProgressBar
+							totalPlayers={players.length}
+							playersReady={actionList.length + 1}
+						/>
 					</div>
 				)
 			) : (
