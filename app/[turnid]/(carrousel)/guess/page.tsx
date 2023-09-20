@@ -8,7 +8,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-const ShowDrawing = () => {
+const GuessDrawing = () => {
 	//TODO
 	//Room name comes from before
 	const sala = "hola";
@@ -17,11 +17,11 @@ const ShowDrawing = () => {
 		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU";
 	//These whoami variables come from before
 	const whoamiName = "uri";
-	//const whoamiId = "CXcVHaxEqIYa3bbCUTgH";const whoamiTurn = 1;
+	//const whoamiId = "CXcVHaxEqIYa3bbCUTgH"; const whoamiTurn = 1;
 	//const whoamiId = "Cyjas3jW8in2YStdypTi"; const whoamiTurn = 2;
-	const whoamiId = "zSvSa9QA7siQHrNOQj8K";
-	const whoamiTurn = 3;
-	//Add listener and redirection to artist user.
+	//const whoamiId = "zSvSa9QA7siQHrNOQj8K"; const whoamiTurn = 3;
+	const whoamiId = "Al2c0UwLHC6buXVbZu3c";
+	const whoamiTurn = 4;
 
 	const { turnid } = useParams();
 	const turnIdNumber = parseInt(turnid as string, 10);
@@ -118,4 +118,4 @@ const ShowDrawing = () => {
 	);
 };
 
-export default ShowDrawing;
+export default GuessDrawing;
