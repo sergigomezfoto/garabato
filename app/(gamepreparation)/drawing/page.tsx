@@ -39,18 +39,17 @@ const Drawing = () => {
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       setPlayer(parsedData);
-      if (parsedData.playerId) {
-        const playerRef = doc(db, "grabatoTest", parsedData.sala, "players", parsedData.playerId);
-        const fetchData = async () => {
-          const docSnap = await getDoc(playerRef);
-          if (docSnap.exists()) {
-            setPlayerData(docSnap.data() as PlayerData);
-          } else {
-            console.log("No es troba el document!");
-          }
-        };
-        fetchData();
-      }
+      const playerRef = doc(db, "grabatoTest", parsedData.sala, "players", parsedData.playerId);
+      const fetchData = async () => {
+        const docSnap = await getDoc(playerRef);
+        if (docSnap.exists()) {
+          setPlayerData(docSnap.data() as PlayerData);
+        } else {
+          console.log("No es troba el document!");
+        }
+      };
+      fetchData();
+
       const playersCollectionRef = collection(db, "grabatoTest", parsedData.sala, "players");
       const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
         const playersDone = snapshot.docs
@@ -58,33 +57,37 @@ const Drawing = () => {
           .filter((value) => value !== null);
         setPlayersDrawDone(playersDone);
       });
-      if (draw === true && players.length === playersDrawDone.length) {
-        router.push('/0/guess');
-      }
 
       return () => unsubscribePlayers();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (draw === true && players.length === playersDrawDone.length) {
+      router.push('/0/guess');
     }
   }, [playersDrawDone]);
 
   const loadPlayers = () => {
     const storedData = localStorage.getItem('GarabatoTest');
     if (storedData) {
-        const data = JSON.parse(storedData);
-        if(data){
+      const data = JSON.parse(storedData);
+      if (data) {
         const playersCollectionRef = collection(db, 'grabatoTest', data.sala, 'players');
         getDocs(playersCollectionRef).then(snapshot => {
-            const allPlayers: PlayerData[] = snapshot.docs.map(doc => ({
-                name: doc.data().name,
-                score: doc.data().score,
-                avatar: doc.data().avatar,
-                drawing: doc.data().drawing,
-                phrase: doc.data().phrase,
-                turnId: doc.data().turnId,
-            }));
+          const allPlayers: PlayerData[] = snapshot.docs.map(doc => ({
+            name: doc.data().name,
+            score: doc.data().score,
+            avatar: doc.data().avatar,
+            drawing: doc.data().drawing,
+            phrase: doc.data().phrase,
+            turnId: doc.data().turnId,
+          }));
 
-            setPlayers(allPlayers);
+          setPlayers(allPlayers);
         });
-    }}
+      }
+    }
   }
 
   const handleOnClick = async () => {
@@ -106,19 +109,19 @@ const Drawing = () => {
 
   return (
     <>
-    {draw ?(<ProgressBar
-          totalPlayers={players.length}
-          playersReady={playersDrawDone.length}
-        />): (
-          <>
-            <h1 className="text-2xl my-6"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
-            <DrawingCanvas canvasRef={canvasRef} />
-            <i className="mb-4">¡Dibuja la frase que te ha tocado!</i>
-            <ButtonPromise onClick={handleOnClick}>
-              ¡Enviar dibujo!
-            </ButtonPromise>
-          </>)
-    }
+      {draw ? (<ProgressBar
+        totalPlayers={players.length}
+        playersReady={playersDrawDone.length}
+      />) : (
+        <>
+          <h1 className="text-2xl my-6"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
+          <DrawingCanvas canvasRef={canvasRef} />
+          <i className="mb-4">¡Dibuja la frase que te ha tocado!</i>
+          <ButtonPromise onClick={handleOnClick}>
+            ¡Enviar dibujo!
+          </ButtonPromise>
+        </>)
+      }
     </>
 
 
