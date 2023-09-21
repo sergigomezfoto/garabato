@@ -13,49 +13,96 @@ type StoredPlayerData = {
 
 type Player = {
     id: string;
+	isMaster?: boolean;
     name: string;
     avatar: string;
+	turnId?: number; //This is the turnId each player are the drawer
+	drawing?: string
+    phrase?: string;
+	guessMade?: string;
+	guessVoted?: string;
+	points?: number;
+	score?: number;
 };
 
-const dummyPlayerData = {
-	playerId: "9230-gudewvidfw",
-	sala: "pablotest45"
+// Test data Oriol:
+	const sala = "hola";
+	//const whoamiId = "CXcVHaxEqIYa3bbCUTgH"; const whoamiTurn = 1;
+	//const whoamiId = "Cyjas3jW8in2YStdypTi"; const whoamiTurn = 2;
+	//const whoamiId = "zSvSa9QA7siQHrNOQj8K"; const whoamiTurn = 3;
+	const whoamiId = "Al2c0UwLHC6buXVbZu3c";
+	const original_title = "Poto"
+
+const dummyLocalStorageData = {
+	playerId: whoamiId,
+	sala: sala
 }
 
 const ShowVotes = () => {
 
-	const [players, setPlayers] = useState<any[]>([]);
 	const { turnid } = useParams();
-	const turnIdNumber = parseInt(turnid as string, 10);
+	const currentTurnId = parseInt(turnid as string, 10); //This sets who is the drawer this turn
 	const router = useRouter();
 
-	const [playerData, setPlayerData] = useState<StoredPlayerData | null>(null);
-    const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
+	const [localId, setlocalId] = useState<StoredPlayerData | null>(null);
+    const [players, setPlayers] = useState<Player[]>([]);
 
+	//This will be used to rotate between the guesses in turnid order:
+	const [guessId, setGuessId] = useState<number|null>(null); 
 	
 	useEffect(() => {
         // Recuperar les dades del jugador des de localStorage
         const storedData = localStorage.getItem('GarabatoTest');
         if (storedData) {
-            setPlayerData(JSON.parse(storedData));
+            setlocalId(JSON.parse(storedData));
         } else {
-			setPlayerData(dummyPlayerData)
+			setlocalId(dummyLocalStorageData)
 		}
     }, []);
 
     useEffect(() => {
-        if (playerData) {
-            const playersCollectionRef = collection(db, 'grabatoTest', playerData.sala, 'players');
+		// Recuperar datos de todos los jugadores:
+        if (localId) {
+            const playersCollectionRef = collection(db, 'grabatoTest', localId.sala, 'players');
             getDocs(playersCollectionRef).then(snapshot => {
                 const players: Player[] = snapshot.docs.map(doc => ({
                     id: doc.id,
                     name: doc.data().name,
-                    avatar: doc.data().avatar
+                    avatar: doc.data().avatar,
+					guessMade: doc.data().guessMade,
+					guessVoted: doc.data().guessVoted,
+					turnId: doc.data().turnId
                 }));
-                setOtherPlayers(players);
+                setPlayers(players);
             });
         }
-    }, [playerData]);
+    }, [localId]);
+
+	//This use effect needs to be splited in parts to be executed only for the guessId we are showing results,
+	// probably points per player should be something external since they are only used to show it here and then added to score
+	useEffect(() => {
+
+		// Find the player who is the current drawer
+		const drawer_idx = players.findIndex(player => player.turnId === currentTurnId);
+
+		// Extract the phrase from the current drawer's object
+		const original_title = players[drawer_idx]?.phrase;
+
+		// Update points for players who correctly chose the original title
+		players.forEach((player: Player, _ , players: Player[]) => {
+			if (player.guessVoted === original_title) {
+				player.points = 200
+				players[drawer_idx].points = 200
+			}
+		});
+	
+		// Update points for players whose guess was chosen by another player
+		players.forEach((player: Player) => {
+			const count = players.filter((p: Player, _ , array: Player[]) => p.guessVoted === player.guessMade).length;
+			player.points = (player.points ?? 0) + count * 100;
+		});
+	
+	}, []);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
