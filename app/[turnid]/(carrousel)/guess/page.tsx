@@ -10,19 +10,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 const GuessDrawing = () => {
-	//TODO
-	//Room name comes from before
-	const sala = "hola";
-	//Drawing comes from before, for now using random picture.
-	const image =
-		"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfdJElDmsk5euD5idRSZMgBHYSPkI0ECTH8OmEm93E4PFQN5ZcLUuuDwedKrqpIYLTaE0&usqp=CAU";
-	//These whoami variables come from before
-	const whoamiName = "uri";
-	//const whoamiId = "CXcVHaxEqIYa3bbCUTgH"; const whoamiTurn = 1;
-	//const whoamiId = "Cyjas3jW8in2YStdypTi"; const whoamiTurn = 2;
-	//const whoamiId = "zSvSa9QA7siQHrNOQj8K"; const whoamiTurn = 3;
-	const whoamiId = "Al2c0UwLHC6buXVbZu3c";
-	const whoamiTurn = 4;
+	const localData = localStorage.getItem("grabatoTest");
+	console.log(localData);
+	const myId = localData.playerId;
+	const sala = localData.sala;
+	const whoamiTurn = 1;
+	const [myTurn, setMyTurn] = useState<Number | null>(null);
 
 	const { turnid } = useParams();
 	const turnIdNumber = parseInt(turnid as string, 10);
@@ -36,8 +29,8 @@ const GuessDrawing = () => {
 
 	//Fetch all players data.
 	useEffect(() => {
-		fetchPlayersData(sala, setPlayers);
-	}, [sala]);
+		fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+	}, []);
 
 	//Filter player based on turnIdNumber.
 	useEffect(() => {
@@ -59,7 +52,7 @@ const GuessDrawing = () => {
 	// Handle form submit
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		await handleUpdate(sala, whoamiId, guess, "guessMade", setActionStatus);
+		await handleUpdate(sala, myId, guess, "guessMade", setActionStatus);
 	};
 
 	//Listen to databse and control player status
@@ -67,8 +60,8 @@ const GuessDrawing = () => {
 		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
 		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
 			const playersDone = snapshot.docs
-				.map((doc) => doc.data().guessMade)
-				.filter((value) => value !== undefined);
+				.map((doc) => doc.data().guessMade) //drawing
+				.filter((value) => value !== undefined); //no hace falta
 			setActionList(playersDone);
 		});
 		if (actionStatus === true && players?.length === actionList?.length + 1) {
@@ -76,7 +69,7 @@ const GuessDrawing = () => {
 		}
 
 		return () => unsubscribePlayers();
-	}, [sala, actionStatus]);
+	}, [sala, actionList]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
@@ -84,7 +77,7 @@ const GuessDrawing = () => {
 				actionStatus === false ? (
 					<div className="flex flex-col items-center space-y-2">
 						<h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1>
-						<img src={image} alt="Dibujo" className="m-5" />
+						<img src={currentPlayer.drawing} alt="Dibujo" className="m-5" />
 						<h1>Descríbelo con pocas palabras.</h1>
 						<form onSubmit={handleSubmit}>
 							<input

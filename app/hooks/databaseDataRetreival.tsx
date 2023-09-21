@@ -3,7 +3,9 @@ import { collection, getDocs } from "firebase/firestore";
 
 export async function fetchPlayersData(
 	sala: string,
-	setPlayers: (players: any[]) => void
+	setPlayers: (players: any[]) => void,
+	myId: string,
+	setMyTurn: (players: any[]) => void
 ) {
 	try {
 		//Create reference to players in DB.
@@ -16,6 +18,11 @@ export async function fetchPlayersData(
 			playerFields: doc.data(),
 		}));
 		setPlayers(playersData);
+
+		setMyTurn(
+			playersData.find((playerData) => playerData.playerID === myId)
+				?.playerFields.turnId
+		);
 	} catch (error) {
 		console.error("Error fetching players:", error);
 	}
