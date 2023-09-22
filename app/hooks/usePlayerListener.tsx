@@ -6,14 +6,20 @@ const usePlayersListener = (sala: string) => {
   const [players, setPlayers] = useState<any[]>([]);
 
   useEffect(() => {
+    console.log('usePlayersListener: useEffect');
+    
     const playersCollectionRef = collection(db, 'grabatoTest', sala, 'players');
     const unsubscribePlayers = onSnapshot(playersCollectionRef, snapshot => {
       const playersData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
       setPlayers(playersData);
     });
 
-    return () => unsubscribePlayers();  // Desubscriure's quan el component es desmonti
-  }, [sala]);
+    return () => {
+      console.log('usePlayersListener: useEffect return');
+      
+      unsubscribePlayers();}  // Desubscriure's quan el component es desmonti
+  }, []);
+  // }, [sala]);
 
   return players;
 };

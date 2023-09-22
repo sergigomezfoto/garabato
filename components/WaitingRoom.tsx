@@ -25,14 +25,20 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   const router = useRouter();
 
   useEffect(() => {
+    console.log('WaitingRoom: useEffect');
+    
     const salaRef = doc(db, 'grabatoTest', sala);
     const unsubscribe = onSnapshot(salaRef, (docSnapshot) => {
       if (docSnapshot.exists() && docSnapshot.data()?.closedRoom) {
         router.push('/drawing');
       }
     });
-    return () => unsubscribe();
-  }, [sala, router]);
+    return () => {
+      console.log('WaitingRoom: useEffect return');
+      unsubscribe()};
+      }, [router]);
+  // }, [sala, router]);
+
 
   /**
    * The `closeRoom` function is executed only on the  room creator, 
