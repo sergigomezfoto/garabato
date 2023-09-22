@@ -34,6 +34,8 @@ const Drawing = () => {
   const router = useRouter();
 
   useEffect(() => {
+    console.log('Drawing: useEffect');
+    
     loadPlayers();
     const storedData = localStorage.getItem('GarabatoTest');
     if (storedData) {
@@ -58,15 +60,21 @@ const Drawing = () => {
         setPlayersDrawDone(playersDone);
       });
 
-      return () => unsubscribePlayers();
+      return () => {
+        console.log('Drawing: useEffect return');     
+        unsubscribePlayers();}
     }
   }, []);
 
   useEffect(() => {
+    console.log('Drawing: useEffect playersDrawDone');
+    console.log('players.length: ',players.length);
+    console.log('playersDrawDone.length: ',playersDrawDone.length);
+    console.log('draw: ',draw);  
     if (draw === true && players.length === playersDrawDone.length) {
       router.push('/0/guess');
     }
-  }, [playersDrawDone]);
+  }, [playersDrawDone,draw]);
 
   const loadPlayers = () => {
     const storedData = localStorage.getItem('GarabatoTest');
