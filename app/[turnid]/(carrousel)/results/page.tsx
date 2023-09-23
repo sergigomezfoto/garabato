@@ -64,7 +64,8 @@ const ShowPartialResults = () => {
 		  resultsFetchData();
 	}, []);
 
-	// calculates the total points for later
+	// I need to modify this to calculate points only for the current guess using players points as partial to show
+	// and adding to score each iteration
 	useEffect(() => {
 
 		if(drawerIdx) {
@@ -86,7 +87,7 @@ const ShowPartialResults = () => {
 			});
 	}
 		
-	}, [drawerIdx]);
+	}, [currentIdx]);
 
 	//it sets a time interval and executed the callback function inside it
 	useEffect(() => {
@@ -129,12 +130,12 @@ const ShowPartialResults = () => {
 			<div className="bg-white rounded-lg shadow-lg p-6 w-full md:w-1/2">
 			{guessId !== null && (
 				<>
+				<p className="text-lg italic mb-4">
+					{players.find(player => player.turnId === guessId)?.name} tried to fooled you with: 
+				</p>
 				<h2 className="text-2xl font-semibold mb-2">
 					{players.find(player => player.turnId === guessId)?.guessMade}
 				</h2>
-				<p className="text-lg italic mb-4">
-					{players.find(player => player.turnId === guessId)?.name}
-				</p>
 				<h3 className="text-xl font-medium mb-3">Players fooled:</h3>
 				<ul className="list-decimal list-inside">
 					{players
