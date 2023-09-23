@@ -19,10 +19,10 @@ export async function fetchPlayersData(
 		}));
 		setPlayers(playersData);
 
-		setMyTurn(
-			playersData.find((playerData) => playerData.playerID === myId)
-				?.playerFields.turnId
-		);
+		const myTurn = playersData.find((playerData) => playerData.playerID === myId)?.playerFields.turnId;
+		setMyTurn(myTurn);
+
+		return {playersData, myTurn};
 	} catch (error) {
 		console.error("Error fetching players:", error);
 	}
