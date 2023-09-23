@@ -1,6 +1,6 @@
 'use client'
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { handleUpdate } from "../../../hooks/handleUpdate";
 import { fetchPlayersData } from "../../../hooks/databaseDataRetreival";
 import { db } from '@/firebase/firebase';
@@ -38,52 +38,33 @@ const ShowPartialResults = () => {
 	const [myTurn, setMyTurn] = useState<any>();
 	const [showPartialResults, setShowPartialResults] = useState(false);
 	const [drawerIdx, setDrawerIdx] =useState<number|null>(null)
+	const [turnOrder, setTurnOrder] = useState<number[]>([]);
+	const currentIdx = useRef(0); // Initialized to 0
+
 
 	//Fetch all players data.
 	useEffect(() => {
-		const result = await fetchPlayersData(sala, setPlayers, myId, setMyTurn);
-		if (result) {
-			const { playersData, myTurn } = result;
-			const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];
-			// Find the player who is the current drawer
-			setDrawerIdx(mappedPlayersData.findIndex(player => player.turnId === currentTurnId))
-		  }
-		console.log(myTurn);
+		const resultsFetchData = async () => {
+			const result = await fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+			if (result) {
+			  const { playersData } = result;
+			  const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];
+			  // Find the player who is the current drawer
+			  const drawerIdx_ = mappedPlayersData.findIndex(player => player.turnId === currentTurnId)
+			  setDrawerIdx(drawerIdx_);
+
+			  // Initialize turnOrder state, putting the drawer's ID last
+			  const orderedTurns = mappedPlayersData.map(player => player.turnId!);
+			  const drawerTurn = orderedTurns.splice(drawerIdx_, 1)[0];
+			  orderedTurns.push(drawerTurn);
+			  setTurnOrder(orderedTurns);
+			}
+		  };
+		  
+		  resultsFetchData();
 	}, []);
 
-
-	useEffect(() => {
-		let interval: NodeJS.Timeout;
-		
-		
-
-		if (players.length > 0) {
-		  let currentIdx = 0;
-		  interval = setInterval(() => {
-			// Set the guessId to the turnId of the player at the current index
-			setGuessId(players[currentIdx]?.turnId?);
-	  
-			// Show the partial results
-			setShowPartialResults(true);
-	  
-			// Hide the partial results after X seconds (e.g., 5 seconds)
-			setTimeout(() => {
-			  setShowPartialResults(false);
-			}, 5000);
-	  
-			// Update the current index for the next iteration
-			currentIdx = (currentIdx + 1) % players.length;
-		  }, 7000); // This 7000ms should be greater than the 5000ms used for showing the partial results
-		}
-	  
-		// Cleanup interval when unmounting the component
-		return () => {
-		  if (interval) {
-			clearInterval(interval);
-		  }
-		};
-	  }, [players]);
-	
+	// calculates the total points for later
 	useEffect(() => {
 
 		if(drawerIdx) {
@@ -103,41 +84,78 @@ const ShowPartialResults = () => {
 				const count = players.filter((p: Player, _ , array: Player[]) => p.guessVoted === player.guessMade).length;
 				player.points = (player.points ?? 0) + count * 100;
 			});
-		}
+	}
 		
-	}, [drawerIdx, guessId]);
+	}, [drawerIdx]);
+
+	//it sets a time interval and executed the callback function inside it
+	useEffect(() => {
+		let interval: NodeJS.Timeout;
+
+		if (turnOrder.length > 0) {
+
+		  	interval = setInterval(() => {
+			// Set the guessId to the turnId of the player at the current index
+			setGuessId(turnOrder[currentIdx.current]);
+	  
+			// Show the partial results
+			setShowPartialResults(true);
+	  
+			// Hide the partial results after X seconds (e.g., 5 seconds)
+			setTimeout(() => {
+			  setShowPartialResults(false);
+			}, 5000);
+	  
+			// Update the current index for the next iteration
+			currentIdx.current = (currentIdx.current + 1) % turnOrder.length;
+		  }, 7000); // This 7000ms should be greater than the 5000ms used for showing the partial results
+		}
+	  
+		// Cleanup interval when unmounting the component
+		return () => {
+		  if (interval) {
+			clearInterval(interval);
+		  }
+		};
+	  }, [players]);
+	
+
 
 
 	return (
 		<div className="flex flex-col justify-center items-center">
-		<h1>Votes</h1>
+		<h1 className="text-3xl font-bold mb-4">Votes</h1>
 		{showPartialResults && (
-		  <div className="results-container">
+			<div className="bg-white rounded-lg shadow-lg p-6 w-full md:w-1/2">
 			{guessId !== null && (
-			  <>
-				<h2 className="big-title">{players.find(player => player.turnId === guessId)?.guessMade}</h2>
-				<p className="author">{players.find(player => player.turnId === guessId)?.name}</p>
-				<h3>Players fooled:</h3>
-				<ul className="voters-list">
-				  {players
+				<>
+				<h2 className="text-2xl font-semibold mb-2">
+					{players.find(player => player.turnId === guessId)?.guessMade}
+				</h2>
+				<p className="text-lg italic mb-4">
+					{players.find(player => player.turnId === guessId)?.name}
+				</p>
+				<h3 className="text-xl font-medium mb-3">Players fooled:</h3>
+				<ul className="list-decimal list-inside">
+					{players
 					.filter(player => player.guessVoted === players.find(p => p.turnId === guessId)?.guessMade)
 					.map((player, index) => (
-					  <li key={index}>
-						{player.name} contributed {player.points ?? 0} points
-					  </li>
+						<li key={index} className="mb-1">
+						{player.name} contributed <span className="font-semibold">{player.points ?? 0}</span> points
+						</li>
 					))}
 				</ul>
-	
-				{drawerIdx ? guessId === players[drawerIdx]?.turnId : null && (
-				  <p className="special-calculation">
+
+				{drawerIdx !== null && guessId === players[drawerIdx]?.turnId && (
+					<p className="text-red-500 font-medium mt-4">
 					Special point calculation for drawer
-				  </p>
+					</p>
 				)}
-			  </>
+				</>
 			)}
-		  </div>
+			</div>
 		)}
-	  </div>
+		</div>
 	  );
 };
 
