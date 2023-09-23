@@ -7,6 +7,7 @@ import { useState,useEffect } from 'react';
 
 interface DrawingCanvasProps {
   canvasRef: React.RefObject<ReactSketchCanvasRef>;
+  onChange?: () => void;
 }
 //TODO POSAR 2 COLORS NOMÉS AL DEL DIBUIX, I COLOR ANDOM POTSER AL DE L'USUARI.
 /**
@@ -16,7 +17,7 @@ interface DrawingCanvasProps {
  * and manipulate the canvas programmatically.
  * @returns The component is returning a `ReactSketchCanvas` component with the specified props.
  */
-const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef }) => {
+const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef ,onChange = () => {}}) => {
   const [strokeColor, setStrokeColor] = useState('black');
   useEffect(() => {
     // Hack to work around Firfox bug in react-sketch-canvas
@@ -38,6 +39,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef }) => {
       
       <ReactSketchCanvas 
         ref={canvasRef} 
+        onChange={onChange}
         strokeColor={strokeColor} 
         strokeWidth={5} 
         width='100%' 
