@@ -11,11 +11,8 @@ interface InitialUserFormProps {
   onJoin: () => void;
   master: boolean;
 
-}/**
- * The InitialUserForm component is a form that allows users to draw themselves, enter their username and submit it.
- * @param  - - `sala`: The room or game identifier.
- * @returns The InitialUserForm component is returning a JSX element.
- */
+}
+
 const InitialUserForm: React.FC<InitialUserFormProps> = ({ sala, onJoin, master }) => {
   const [username, setUsername] = useState('');
   const [drawingData, setDrawingData] = useState('');
