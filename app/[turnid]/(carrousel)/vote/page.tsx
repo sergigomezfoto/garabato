@@ -9,12 +9,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const VoteDrawing = () => {
-	const localData = localStorage.getItem("grabatoTest");
-	console.log(localData);
-	const myId = localData.playerId;
-	const sala = localData.sala;
-	const whoamiTurn = 1;
-	const [myTurn, setMyTurn] = useState<Number | null>(null);
+	const localStorageItem = localStorage.getItem("GarabatoTest");
+	const { playerId: myId, sala } = JSON.parse(localStorageItem);
+	console.log("from local storage", myId, sala);
+	const [myTurn, setMyTurn] = useState<any>();
 
 	const { turnid } = useParams();
 	const turnIdNumber = parseInt(turnid as string, 10);
@@ -29,7 +27,10 @@ const VoteDrawing = () => {
 	//Fetch all players data.
 	useEffect(() => {
 		fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+		console.log(myTurn);
 	}, []);
+
+	console.log("from fetching", players, myTurn);
 
 	//Filter player based on turnIdNumber.
 	useEffect(() => {
@@ -41,12 +42,14 @@ const VoteDrawing = () => {
 
 			if (currentPlayer) {
 				setCurrentPlayer(currentPlayer);
-				if (currentPlayer.playerFields.turnId === whoamiTurn) {
+				if (currentPlayer.playerFields.turnId === myTurn) {
 					setActionStatus(true);
 				}
 			}
 		}
 	}, [players]);
+
+	console.log("Current player is ", currentPlayer);
 
 	// Handle vote
 	const handleVote = async (vote: string) => {
@@ -62,12 +65,17 @@ const VoteDrawing = () => {
 				.filter((value) => value !== undefined);
 			setActionList(playersDone);
 		});
-		if (actionStatus === true && players?.length === actionList?.length + 1) {
-			router.push(`/${turnIdNumber}/results`);
-		}
 
 		return () => unsubscribePlayers();
-	}, [sala, actionList]);
+	}, []);
+
+	//Reroute players when all players are done.
+	useEffect(() => {
+		if (actionStatus === true && players?.length === actionList?.length + 1) {
+			console.log("now all routed!");
+			//router.push(`/${turnIdNumber}/results`);
+		}
+	}, [actionList]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
@@ -75,7 +83,11 @@ const VoteDrawing = () => {
 				actionStatus === false ? (
 					<div className="flex flex-col items-center space-y-2">
 						<h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1>
-						<img src={currentPlayer.drawing} alt="Dibujo" className="m-5" />
+						<img
+							src={currentPlayer.playerFields.drawing}
+							alt="Dibujo"
+							className="m-5"
+						/>
 						<h1>Vota lo que crees que es.</h1>
 
 						<ul className="flex flex-wrap justify-center items-center gap-4">
