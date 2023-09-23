@@ -36,52 +36,96 @@ const ShowPartialResults = () => {
     const [players, setPlayers] = useState<Player[]>([]);
 	const [guessId, setGuessId] = useState<number|null>(null); 
 	const [myTurn, setMyTurn] = useState<any>();
+	const [showPartialResults, setShowPartialResults] = useState(false);
+	const [drawerIdx, setDrawerIdx] =useState<number|null>(null)
 
 	//Fetch all players data.
 	useEffect(() => {
-		fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+		const result = await fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+		if (result) {
+			const { playersData, myTurn } = result;
+			const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];
+			// Find the player who is the current drawer
+			setDrawerIdx(mappedPlayersData.findIndex(player => player.turnId === currentTurnId))
+		  }
 		console.log(myTurn);
 	}, []);
 
 
-	//This use effect needs to be splited in parts to be executed only for the guessId we are showing results,
-	// probably points per player should be something external since they are only used to show it here and then added to score
+	useEffect(() => {
+		let interval: NodeJS.Timeout;
+		
+		
+
+		if (players.length > 0) {
+		  let currentIdx = 0;
+		  interval = setInterval(() => {
+			// Set the guessId to the turnId of the player at the current index
+			setGuessId(players[currentIdx]?.turnId?);
+	  
+			// Show the partial results
+			setShowPartialResults(true);
+	  
+			// Hide the partial results after X seconds (e.g., 5 seconds)
+			setTimeout(() => {
+			  setShowPartialResults(false);
+			}, 5000);
+	  
+			// Update the current index for the next iteration
+			currentIdx = (currentIdx + 1) % players.length;
+		  }, 7000); // This 7000ms should be greater than the 5000ms used for showing the partial results
+		}
+	  
+		// Cleanup interval when unmounting the component
+		return () => {
+		  if (interval) {
+			clearInterval(interval);
+		  }
+		};
+	  }, [players]);
+	
 	useEffect(() => {
 
-		// Find the player who is the current drawer
-		const drawer_idx = players.findIndex(player => player.turnId === currentTurnId);
+		if(drawerIdx) {
+			// Extract the phrase from the current drawer's object
+			const original_title = players[drawerIdx]?.phrase;
 
-		// Extract the phrase from the current drawer's object
-		const original_title = players[drawer_idx]?.phrase;
+			// Update points for players who correctly chose the original title
+			players.forEach((player: Player, _ , players: Player[]) => {
+				if (player.guessVoted === original_title) {
+					player.points = 200
+					players[drawerIdx].points = 200
+				}
+			});
+		
+			// Update points for players whose guess was chosen by another player
+			players.forEach((player: Player) => {
+				const count = players.filter((p: Player, _ , array: Player[]) => p.guessVoted === player.guessMade).length;
+				player.points = (player.points ?? 0) + count * 100;
+			});
+		}
+		
+	}, [drawerIdx, guessId]);
 
-		// Update points for players who correctly chose the original title
-		players.forEach((player: Player, _ , players: Player[]) => {
-			if (player.guessVoted === original_title) {
-				player.points = 200
-				players[drawer_idx].points = 200
-			}
-		});
-	
-		// Update points for players whose guess was chosen by another player
-		players.forEach((player: Player) => {
-			const count = players.filter((p: Player, _ , array: Player[]) => p.guessVoted === player.guessMade).length;
-			player.points = (player.points ?? 0) + count * 100;
-		});
-	
-	}, [guessId]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
-			<h1>Votes</h1>
-			<ul className="m-5">
-				<li className="m-3">guess 1 :: 1 :: jugador1 :: autor </li>
-				<li className="m-3">guess 2 :: 2 :: jugador2 :: autor </li>
-				{/* <li>guess 3 :: 0 :: :: autor </li>
-                <li>guess 4 :: 0 ::  :: autor </li>
-                <li>guess 5 :: 1 :: jugador4 :: autor </li> */}
-			</ul>
+		  <h1>Votes</h1>
+		  {showPartialResults && (
+			<div className="results-container">
+			  {players.map((player, idx) => (
+				<div key={idx} className="result-item">
+				  <span className="player-name">{player.name}</span>:
+				  <span className="player-points">{player.points ?? 0}</span>
+				  <span className="player-guess">
+					{player.guessVoted === player.guessMade ? " (chosen by self)" : ""}
+				  </span>
+				</div>
+			  ))}
+			</div>
+		  )}
 		</div>
-	);
+	  );
 };
 
 export default ShowPartialResults;
