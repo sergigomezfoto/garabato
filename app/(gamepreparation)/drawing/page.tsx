@@ -32,7 +32,18 @@ const Drawing = () => {
   const canvasRef = useRef<ReactSketchCanvasRef | null>(null);
   const [draw, setDraw] = useState<boolean>(false);
   const router = useRouter();
-
+  
+  const [interactionCount, setInteractionCount] = useState(0);
+  const [isButtonActive, setButtonActive] = useState(false);
+  
+  const handleCanvasInteraction = () => {
+    console.log('interacted');
+    setInteractionCount(prevCount => prevCount + 1);
+    if (interactionCount === 1) { 
+      setButtonActive(true);
+    }// Comença a comptar des de 0, així que a la segona interió serià 1
+  };
+  
   useEffect(() => {
     console.log('Drawing: useEffect');
     
@@ -124,9 +135,11 @@ const Drawing = () => {
       />) : (
         <>
           <h1 className="text-2xl my-6"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
-          <DrawingCanvas canvasRef={canvasRef} />
+          <DrawingCanvas canvasRef={canvasRef} onChange={handleCanvasInteraction} />
           <i className="mb-4">¡Dibuja la frase que te ha tocado!</i>
-          <ButtonPromise onClick={handleOnClick}>
+          <ButtonPromise onClick={handleOnClick}
+          isDisabled={!isButtonActive}
+          >
             ¡Enviar dibujo!
           </ButtonPromise>
         </>)
