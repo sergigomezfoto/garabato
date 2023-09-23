@@ -120,6 +120,7 @@ const Drawing = () => {
       {draw ? (<ProgressBar
         totalPlayers={players.length}
         playersReady={playersDrawDone.length}
+        text='Espera que terminen todos los jugadores de dibujar'
       />) : (
         <>
           <h1 className="text-2xl my-6"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
