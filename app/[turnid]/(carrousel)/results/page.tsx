@@ -110,21 +110,34 @@ const ShowPartialResults = () => {
 
 	return (
 		<div className="flex flex-col justify-center items-center">
-		  <h1>Votes</h1>
-		  {showPartialResults && (
-			<div className="results-container">
-			  {players.map((player, idx) => (
-				<div key={idx} className="result-item">
-				  <span className="player-name">{player.name}</span>:
-				  <span className="player-points">{player.points ?? 0}</span>
-				  <span className="player-guess">
-					{player.guessVoted === player.guessMade ? " (chosen by self)" : ""}
-				  </span>
-				</div>
-			  ))}
-			</div>
-		  )}
-		</div>
+		<h1>Votes</h1>
+		{showPartialResults && (
+		  <div className="results-container">
+			{guessId !== null && (
+			  <>
+				<h2 className="big-title">{players.find(player => player.turnId === guessId)?.guessMade}</h2>
+				<p className="author">{players.find(player => player.turnId === guessId)?.name}</p>
+				<h3>Players fooled:</h3>
+				<ul className="voters-list">
+				  {players
+					.filter(player => player.guessVoted === players.find(p => p.turnId === guessId)?.guessMade)
+					.map((player, index) => (
+					  <li key={index}>
+						{player.name} contributed {player.points ?? 0} points
+					  </li>
+					))}
+				</ul>
+	
+				{drawerIdx ? guessId === players[drawerIdx]?.turnId : null && (
+				  <p className="special-calculation">
+					Special point calculation for drawer
+				  </p>
+				)}
+			  </>
+			)}
+		  </div>
+		)}
+	  </div>
 	  );
 };
 
