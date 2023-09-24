@@ -41,7 +41,7 @@ export default function Create() {
   return (
     <div className="flex flex-col items-center justify-center">
       {!gameCreated ? (
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4"  autoComplete="off">
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2 text-center" htmlFor="createID">
               Crea un sala
