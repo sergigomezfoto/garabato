@@ -9,16 +9,12 @@ interface DrawingCanvasProps {
   canvasRef: React.RefObject<ReactSketchCanvasRef>;
   onChange?: () => void;
 }
-//TODO POSAR 2 COLORS NOMÉS AL DEL DIBUIX, I COLOR ANDOM POTSER AL DE L'USUARI.
-/**
- * The below code is a TypeScript React component called DrawingCanvas that renders a canvas element
- * to draw with one color with your finger or mouse, with a hack to work around a Firefox bug.
- * @param  - - `canvasRef`: A reference to the ReactSketchCanvas component, which allows you to access
- * and manipulate the canvas programmatically.
- * @returns The component is returning a `ReactSketchCanvas` component with the specified props.
- */
+
 const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef ,onChange = () => {}}) => {
   const [strokeColor, setStrokeColor] = useState('black');
+  const [numInteraction, setNumInteraction] = useState(0);
+  console.log("canvasRef");
+  
   useEffect(() => {
     // Hack to work around Firfox bug in react-sketch-canvas
     // https://github.com/vinothpandian/react-sketch-canvas/issues/54
@@ -29,6 +25,13 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef ,onChange = ()
       
   }, []);
 
+  const handleonChange = () => {
+    
+    if(numInteraction < 2){
+      onChange();
+      setNumInteraction(prev => prev + 1);
+    }
+  };
 
   return (
 //HACK A ELS TIPUS DE REACTSKETCHCANVAS HEIGHT DEMANA UN STRING PERÒ "100%" NO FUNCIONA NOMÉS FUNCIONA POSAR QUALSEVOL NÚMERO AL PROP HEIGHT. TYOUS CAMBIAT A streing|number
@@ -39,7 +42,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef ,onChange = ()
       
       <ReactSketchCanvas 
         ref={canvasRef} 
-        onChange={onChange}
+        onChange={handleonChange}
         strokeColor={strokeColor} 
         strokeWidth={5} 
         width='100%' 
