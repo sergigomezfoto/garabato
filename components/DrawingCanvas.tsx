@@ -21,7 +21,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef ,onChange = ()
     document
       .querySelector("#react-sketch-canvas__stroke-group-0")
       ?.removeAttribute("mask");
-      console.log("canvasRef", canvasRef);
+      console.log("hack per firefox");
       
   }, []);
 
@@ -34,11 +34,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef ,onChange = ()
   };
 
   return (
-//HACK A ELS TIPUS DE REACTSKETCHCANVAS HEIGHT DEMANA UN STRING PERÒ "100%" NO FUNCIONA NOMÉS FUNCIONA POSAR QUALSEVOL NÚMERO AL PROP HEIGHT. TYOUS CAMBIAT A streing|number
-      // @ts-ignore <- Esto elimina el error de typescript con el tipo de height
 
-      // <ReactSketchCanvas ref={canvasRef} strokeColor="black" strokeWidth={5} width='100%' height="100%" className='div-canvas' /> 
-      // <div className="relative">
       
       <ReactSketchCanvas 
         ref={canvasRef} 
@@ -49,19 +45,6 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef ,onChange = ()
         height="100%" 
         className='div-canvas' 
       />
-
-    //   <div className="absolute top-0 right-0 space-x-2">
-    //     <button 
-    //       className="w-8 h-8 bg-red-500" 
-    //       onClick={() => setStrokeColor('red')} 
-    //     ></button>
-    //     <button 
-    //       className="w-8 h-8 bg-blue-500" 
-    //       onClick={() => setStrokeColor('blue')} 
-    //     ></button>
-    //   </div>
-    // </div>
-
   );
 };
 export default DrawingCanvas;
