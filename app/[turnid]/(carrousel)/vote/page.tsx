@@ -19,10 +19,7 @@ type Player = {
 };
 
 const VoteDrawing = () => {
-	console.log("I am the first console log");
 	const [myTurn, setMyTurn] = useState<any>();
-	const [myId, setMyId] = useState<string>("");
-	const [sala, setSala] = useState<string>("");
 	const { turnid } = useParams();
 	const turnIdNumber = parseInt(turnid as string, 10);
 	const router = useRouter();
@@ -35,31 +32,26 @@ const VoteDrawing = () => {
 	} | null>(null);
 	const [vote, setVote] = useState("");
 
-	//Fetch my data
-	useEffect(() => {
-		console.log("I am fetch my data hook");
-		const localStorageItem = localStorage.getItem("GarabatoTest");
-		if (localStorageItem) {
-			const { playerId, sala } = JSON.parse(localStorageItem);
-			console.log(playerId, sala);
-			setMyId(playerId);
-			setSala(sala);
-		}
-	}, []);
+	const localStorageItem = localStorage.getItem("GarabatoTest");
+	const { playerId: myId, sala: sala } = JSON.parse(localStorageItem);
 
-	//Fetch all players data.
+	//Fetch all players data and set up listener
 	useEffect(() => {
-		console.log("I am fetch all players data hook");
-		if (myId && sala) {
-			fetchPlayersData(sala, setPlayers, myId, setMyTurn);
-			console.log(myTurn);
-		}
-	}, [myId, sala]);
+		fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+
+		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
+		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
+			const playersDone = snapshot.docs
+				.map((doc) => doc.data().guessVoted)
+				.filter((value) => value !== undefined);
+			setActionList(playersDone);
+		});
+
+		return () => unsubscribePlayers();
+	}, []);
 
 	//Filter player based on turnIdNumber.
 	useEffect(() => {
-		console.log("I am filter hook");
-		console.log("At this point, this variables should be filled: ", myId, sala);
 		if (players) {
 			const currentPlayer = players.find(
 				(player: { playerFields: { turnId: number } }) =>
@@ -80,28 +72,12 @@ const VoteDrawing = () => {
 		await handleUpdate(sala, myId, vote, "guessVoted", setActionStatus);
 	};
 
-	//Listen to databse and control player status
-	useEffect(() => {
-		console.log("I am the listener hook");
-		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
-		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
-			const playersDone = snapshot.docs
-				.map((doc) => doc.data().guessVoted)
-				.filter((value) => value !== undefined);
-			setActionList(playersDone);
-		});
-
-		return () => unsubscribePlayers();
-	}, [myId, sala]);
-
 	//Reroute players when all players are done.
 	useEffect(() => {
-		console.log("I am the rerouter hook");
 		if (actionStatus === true && players?.length === actionList?.length + 1) {
-			console.log("now all routed!");
 			router.push(`/${turnIdNumber}/results`);
 		}
-	}, [actionList]);
+	}, [actionList, actionStatus]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
@@ -117,16 +93,18 @@ const VoteDrawing = () => {
 						<h1>Vota lo que crees que es.</h1>
 
 						<ul className="flex flex-wrap justify-center items-center gap-4">
-							{players.map((player: Player, index: number) => (
-								<button
-									key={index}
-									value={vote}
-									className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
-									onClick={() => handleVote(player.playerFields.guessMade)}
-								>
-									{player.playerFields.guessMade}
-								</button>
-							))}
+							{players
+								.filter((player: Player) => player.playerFields.guessMade)
+								.map((player: Player, index: number) => (
+									<button
+										key={index}
+										value={vote}
+										className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+										onClick={() => handleVote(player.playerFields.guessMade)}
+									>
+										{player.playerFields.guessMade}
+									</button>
+								))}
 						</ul>
 					</div>
 				) : (
