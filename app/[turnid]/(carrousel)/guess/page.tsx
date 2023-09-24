@@ -7,14 +7,12 @@ import { db } from "@/firebase/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import React from "react";
 
 const GuessDrawing = () => {
-	const localStorageItem = localStorage.getItem("GarabatoTest");
-	const { playerId: myId, sala } = JSON.parse(localStorageItem);
-	console.log("from local storage", myId, sala);
+	console.log("I am the first console log");
 	const [myTurn, setMyTurn] = useState<any>();
-
+	const [myId, setMyId] = useState<string>("");
+	const [sala, setSala] = useState<string>("");
 	const { turnid } = useParams();
 	const turnIdNumber = parseInt(turnid as string, 10);
 	const router = useRouter();
@@ -22,19 +20,36 @@ const GuessDrawing = () => {
 	const [actionStatus, setActionStatus] = useState<boolean>(false);
 	const [players, setPlayers] = useState<any>();
 	const [actionList, setActionList] = useState<any>();
-	const [currentPlayer, setCurrentPlayer] = useState();
+	const [currentPlayer, setCurrentPlayer] = useState<{
+		playerFields: { name: string; drawing: string; turnId: number };
+	} | null>(null);
 	const [guess, setGuess] = useState("");
+
+	//Fetch my data
+	useEffect(() => {
+		console.log("I am fetch my data hook");
+		const localStorageItem = localStorage.getItem("GarabatoTest");
+		if (localStorageItem) {
+			const { playerId, sala } = JSON.parse(localStorageItem);
+			console.log(playerId, sala);
+			setMyId(playerId);
+			setSala(sala);
+		}
+	}, []);
 
 	//Fetch all players data.
 	useEffect(() => {
-		fetchPlayersData(sala, setPlayers, myId, setMyTurn);
-		console.log(myTurn);
-	}, []);
-
-	console.log("from fetching", players, myTurn);
+		console.log("I am fetch all players data hook");
+		if (myId && sala) {
+			fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+			console.log(myTurn);
+		}
+	}, [myId, sala]);
 
 	//Filter player based on turnIdNumber.
 	useEffect(() => {
+		console.log("I am filter hook");
+		console.log("At this point, this variables should be filled: ", myId, sala);
 		if (players) {
 			const currentPlayer = players.find(
 				(player: { playerFields: { turnId: number } }) =>
@@ -50,8 +65,6 @@ const GuessDrawing = () => {
 		}
 	}, [players]);
 
-	console.log("Current player is ", currentPlayer);
-
 	// Handle form submit
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -60,6 +73,7 @@ const GuessDrawing = () => {
 
 	//Listen to databse and control player status
 	useEffect(() => {
+		console.log("I am the listener hook");
 		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
 		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
 			const playersDone = snapshot.docs
@@ -69,13 +83,14 @@ const GuessDrawing = () => {
 		});
 
 		return () => unsubscribePlayers();
-	}, []);
+	}, [myId, sala]);
 
 	//Reroute players when all players are done.
 	useEffect(() => {
+		console.log("I am the rerouter hook");
 		if (actionStatus === true && players?.length === actionList?.length + 1) {
 			console.log("now all routed!");
-			//router.push(`/${turnIdNumber}/vote`);
+			router.push(`/${turnIdNumber}/vote`);
 		}
 	}, [actionList]);
 
@@ -115,6 +130,7 @@ const GuessDrawing = () => {
 					<ProgressBar
 						totalPlayers={players.length}
 						playersReady={actionList.length + 1}
+						text="Espera a que todos los jugadores envien su palabra."
 					/>
 				)
 			) : (
