@@ -5,6 +5,7 @@ import { handleUpdate } from "../../../hooks/handleUpdate";
 import { fetchPlayersData } from "../../../hooks/databaseDataRetreival";
 import { db } from '@/firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { Scope_One } from "next/font/google";
 
 
 type Player = {
@@ -17,8 +18,9 @@ type Player = {
     phrase?: string;
 	guessMade?: string;
 	guessVoted?: string;
-	points?: number;
+	pointsForAuthor?: number;
 	score?: number;
+	totalScore?: number;
 };
 
 const ShowPartialResults = () => {
@@ -35,17 +37,16 @@ const ShowPartialResults = () => {
 	//Use states
     const [players, setPlayers] = useState<Player[]>([]);
 	const [guessId, setGuessId] = useState<number|null>(null); 
-	const [myTurn, setMyTurn] = useState<any>();
 	const [showPartialResults, setShowPartialResults] = useState(false);
 	const [drawerIdx, setDrawerIdx] =useState<number|null>(null)
 	const [turnOrder, setTurnOrder] = useState<number[]>([]);
-	const currentIdx = useRef(0); // Initialized to 0
+	const currentIdx = useRef(-1); // Initialized to 0
 
 
 	//Fetch all players data.
 	useEffect(() => {
 		const resultsFetchData = async () => {
-			const result = await fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+			const result = await fetchPlayersData(sala, setPlayers, myId, ()=>{});
 			if (result) {
 			  const { playersData } = result;
 			  const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];
@@ -54,40 +55,61 @@ const ShowPartialResults = () => {
 			  setDrawerIdx(drawerIdx_);
 
 			  // Initialize turnOrder state, putting the drawer's ID last
-			  const orderedTurns = mappedPlayersData.map(player => player.turnId!);
-			  const drawerTurn = orderedTurns.splice(drawerIdx_, 1)[0];
-			  orderedTurns.push(drawerTurn);
-			  setTurnOrder(orderedTurns);
+			  const turnOrder_ = mappedPlayersData.map(player => player.turnId!);
+			  const drawerTurn = turnOrder_.splice(drawerIdx_, 1)[0];
+			  turnOrder_.push(drawerTurn);
+			  setTurnOrder(turnOrder_);
 			}
 		  };
 		  
 		  resultsFetchData();
 	}, []);
 
-	// I need to modify this to calculate points only for the current guess using players points as partial to show
-	// and adding to score each iteration
 	useEffect(() => {
 
-		if(drawerIdx) {
-			// Extract the phrase from the current drawer's object
-			const original_title = players[drawerIdx]?.phrase;
+		// Copy the players array to make changes
+		const updatedPlayers = [...players];
+		
+		if(drawerIdx !== null && guessId !== null) {
 
-			// Update points for players who correctly chose the original title
-			players.forEach((player: Player, _ , players: Player[]) => {
-				if (player.guessVoted === original_title) {
-					player.points = 200
-					players[drawerIdx].points = 200
-				}
-			});
-		
-			// Update points for players whose guess was chosen by another player
-			players.forEach((player: Player) => {
-				const count = players.filter((p: Player, _ , array: Player[]) => p.guessVoted === player.guessMade).length;
-				player.points = (player.points ?? 0) + count * 100;
-			});
-	}
-		
-	}, [currentIdx]);
+
+			// Find the player who made the current guess
+			const guessAuthorIdx = players.findIndex(player => player.turnId === guessId);
+
+			if (guessAuthorIdx) {
+				const originaTitle = players[drawerIdx]?.phrase;
+
+				// Voters who chose the current guess
+				const votersForCurrentGuessIdxs = players.findIndex(player => player.guessVoted === players[guessAuthorIdx].guessMade);
+
+				// Count how many players voted for the current guess
+				const count = players.filter((player) => player.guessVoted === players[guessAuthorIdx].guessMade).length;
+
+				// Give score to the guessAuthor
+				updatedPlayers[guessAuthorIdx].score = 100 * count;
+
+				// Update pointsForAuthor
+				updatedPlayers.forEach((player) => {
+					// If player voted for the current guess
+					if (player.guessVoted == players[guessAuthorIdx].guessMade) {
+						player.pointsForAuthor = 100
+					} else {
+						player.pointsForAuthor = 0
+					}
+
+					//if we are in the original title 
+					if (guessAuthorIdx === drawerIdx && player.guessVoted === originaTitle) {
+					  player.score = (player.score ?? 0) + 100;
+					}
+				});
+
+        	}
+
+			// Update the state
+			setPlayers(updatedPlayers);
+
+		}
+	}, [guessId, drawerIdx]);
 
 	//it sets a time interval and executed the callback function inside it
 	useEffect(() => {
@@ -118,7 +140,7 @@ const ShowPartialResults = () => {
 			clearInterval(interval);
 		  }
 		};
-	  }, [players]);
+	  }, [players, turnOrder]);
 	
 
 
@@ -142,7 +164,7 @@ const ShowPartialResults = () => {
 					.filter(player => player.guessVoted === players.find(p => p.turnId === guessId)?.guessMade)
 					.map((player, index) => (
 						<li key={index} className="mb-1">
-						{player.name} contributed <span className="font-semibold">{player.points ?? 0}</span> points
+						{player.name} contributed <span className="font-semibold">{player.pointsForAuthor ?? 0}</span> points
 						</li>
 					))}
 				</ul>
