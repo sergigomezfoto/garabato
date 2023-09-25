@@ -7,6 +7,7 @@ import { db } from "@/firebase/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 type Player = {
 	playerFields: {
@@ -81,7 +82,7 @@ const VoteDrawing = () => {
 				}
 			}
 		}
-	}, [players]);
+	}, [players, turnIdNumber, myTurn]);
 
 	// Handle vote
 	const handleVote = async (vote: string) => {
@@ -93,7 +94,7 @@ const VoteDrawing = () => {
 		if (actionStatus === true && players?.length === actionList?.length + 1) {
 			router.push(`/${turnIdNumber}/results`);
 		}
-	}, [actionList, actionStatus]);
+	}, [actionList, actionStatus, router, turnIdNumber, players?.length]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
