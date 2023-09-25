@@ -1,9 +1,10 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import InitialUserForm from '../../../../components/InitialUserForm';
 import WaitingRoom from '../../../../components/WaitingRoom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase';
+import { log } from 'console';
 
 
 type JoinPageProps = {
@@ -29,23 +30,30 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
     } else {
       console.log('No sóc el creador');
     }
-  }, []);
+  }, [currentPath]);
 
   useEffect(() => {    
     // Comprova si la sala existeix i si està tancada
     const checkSalaExists = async () => {
-      const salaRef = doc(db, 'grabatoTest', params.sala);
-      const docSnapshot = await getDoc(salaRef);
-      if (docSnapshot.exists()) {
-        setSalaExists(true);
-        setSalaClosed(docSnapshot.data().closedRoom);
-      } else {
-        setSalaExists(false);
+      try {
+        const salaRef = doc(db, 'grabatoTest', params.sala);
+        const docSnapshot = await getDoc(salaRef);
+        if (docSnapshot.exists()) {
+          setSalaExists(true);
+          setSalaClosed(docSnapshot.data().closedRoom);
+          console.log('La sala existeix, i està tancada? ', docSnapshot.data().closedRoom);
+          
+        } else {
+          setSalaExists(false);
+          console.log('La sala no existeix');
+        }
+      } catch (error) {
+        console.error("Error comprovant si la sala existeix:", error);
+        //vull fer coses aqui?
       }
     };
     checkSalaExists();
-
-  }, []);
+}, [params.sala]);
 
 
   if (salaExists === null) {

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'; // Importa useRouter per navegar a 
 import SendRoomWhatsapp from '../../../components/SendRoomWhatsapp';
 import CopyToClipboard from '../../../components/CopyToClipboard';
 import Button from '../../../components/design/Button';
+import normalizeInput from '../../helpers/normalizeInputText';
 
 export default function Create() {
   const [word, setWord] = useState('');
@@ -14,16 +15,6 @@ export default function Create() {
   const [gameCreated, setGameCreated] = useState(false); // Estat per saber si el joc ha estat creat
   const router = useRouter();
 
-  /**
-   * The handleSubmit function is used to handle form submission in a React component, checking if the room name
-   * is empty or already exists in a database collection before creating a new document in the db.
-   * @param e - The parameter `e` is of type `React.FormEvent<HTMLFormElement>`. It represents the form
-   * event that is triggered when the form is submitted.
-   * @returns If the `word` is empty or only contains spaces, the function will return and not perform
-   * any further actions. Otherwise, it will check if a document with the same `word` exists in the
-   * `grabatoTest` collection. If it doesn't exist, a new document will be created with the current date
-   * and the `closedRoom` field set to `false`. The `setGameCreated
-   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setWarning('');
@@ -50,7 +41,7 @@ export default function Create() {
   return (
     <div className="flex flex-col items-center justify-center">
       {!gameCreated ? (
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4"  autoComplete="off">
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2 text-center" htmlFor="createID">
               Crea un sala
@@ -59,7 +50,7 @@ export default function Create() {
               id="createID"
               type="text"
               value={word}
-              onChange={(e) => setWord(e.target.value)}
+              onChange={(e) => setWord(normalizeInput(e.target.value))}
               className="p-2 border rounded"
               placeholder="nombre de la sala"
             />

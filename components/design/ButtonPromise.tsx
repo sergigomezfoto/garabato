@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 
 export interface ButtonPromiseProps {
-    color?: string;
     text?: string;
     type?: 'submit' | 'button' | 'reset';
     onClick: () => Promise<any>;
     children?: React.ReactNode;
+    isDisabled?: boolean;
 }
 
-const ButtonPromise: React.FC<ButtonPromiseProps> = ({ color = 'blue', text, type, onClick, children }) => {
+const ButtonPromise: React.FC<ButtonPromiseProps> = ({ text, type, onClick, children, isDisabled = false }) => {
     const [state, setState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
     const handleClick = async () => {
-        if (state !== 'loading') {
+        if (state !== 'loading' && !isDisabled) {
             setState('loading');
             try {
                 await onClick();
@@ -30,23 +30,20 @@ const ButtonPromise: React.FC<ButtonPromiseProps> = ({ color = 'blue', text, typ
     switch (state) {
         case 'loading':
             displaySpinner = true;
-            bgColor = `bg-${color}-500 hover:bg-${color}-700`;
+            bgColor = `bg-blue-500 hover:bg-blue-700`;
             break;
         case 'success':
-            // displaySpinner = true;
             textContent = "¡Hecho!";
             bgColor = "bg-green-500";
             break;
         case 'error':
-            // displaySpinner = true;
             textContent = "¡Error!";
             bgColor = "bg-red-500";
             break;
         default:
-            bgColor = `bg-${color}-500 hover:bg-${color}-700`;
+            bgColor = isDisabled ? 'bg-gray-300 cursor-not-allowed' : `bg-blue-500 hover:bg-blue-700`;
             break;
     }
-
     const baseClass = `flex items-center justify-center ${bgColor} text-white font-bold py-2 px-4 rounded m-2`;
 
 
@@ -55,7 +52,7 @@ const ButtonPromise: React.FC<ButtonPromiseProps> = ({ color = 'blue', text, typ
             type={type}
             className={baseClass}
             onClick={handleClick}
-            disabled={state === 'loading' || state === 'success'}
+            disabled={state === 'loading' || state === 'success' || isDisabled}
         >
             <span className={`button-text ${displaySpinner ? 'hidden-button' : ''}`}>{textContent}</span>
             {displaySpinner && <span className="button-spinner"></span>}

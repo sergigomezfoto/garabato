@@ -53,7 +53,7 @@ const StartGame = () => {
                         {otherPlayers.filter(player => player.id === playerData.playerId).map(player => (
                             <div key={player.id} className="text-center my-4">
                                 <div className="flex justify-center mb-4">
-                                    <img src={player.avatar} alt={player.name} className="rounded-full w-32 h-32" />
+                                    <Image src={player.avatar} alt={player.name} className="rounded-full w-32 h-32" />
                                 </div>
                                 <p><strong>{player.name}</strong></p>
                             </div>
@@ -66,7 +66,7 @@ const StartGame = () => {
                         {/* Exclou el jugador actual de la llista d'altres jugadors */}
                         {otherPlayers.filter(player => player.id !== playerData.playerId).map(player => (
                             <div key={player.id} className="flex flex-col items-center space-y-2">
-                                <img src={player.avatar} alt={player.name} className="rounded-full w-16 h-16" />
+                                <Image src={player.avatar} alt={player.name} className="rounded-full w-16 h-16" />
                                 {/* <span className="text-sm">{player.id}</span> */}
                                 <span className="text-lg">{player.name}</span>
                             </div>
