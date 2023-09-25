@@ -1,7 +1,7 @@
 'use client'
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { fetchPlayersData } from "../../../hooks/databaseDataRetreival";
+import { fetchPlayersData } from "../../hooks/databaseDataRetreival";
 import calculatePoints from "@/app/helpers/calculatePoints"
 
 type Player = {
@@ -35,7 +35,6 @@ const ShowPartialResults = () => {
 	const [turnOrder, setTurnOrder] = useState<number[]>([]);
 	const currentIdx = useRef(0); // Initialized to 0
 	
-	
 	//Fetch all players data.
 	useEffect(() => {
 		//Local storage
@@ -65,33 +64,34 @@ const ShowPartialResults = () => {
 		  };
 		  
 		  resultsFetchData();
-	}, [currentIdx]);
+	}, [currentTurnId]);
 
 	//it sets a time interval and executed the callback function inside it
 	useEffect(() => {
 		let interval: NodeJS.Timeout;
-		console.log(`Results: entering interval useEffect - turnOrder: ${turnOrder},  drawer: ${drawerIdx}, `)
+		console.log(`Results: entering interval useEffect - turnOrder: ${turnOrder}, currentIdx ${currentIdx.current} `)
 		if (turnOrder.length > 0 && drawerIdx !== null && guessId !== null) {
 			
 			console.log(`Results: interval points useEffect executed: currentIdx ${currentIdx.current}, guessId: ${guessId}}`)
 		  	interval = setInterval(() => {
 
 			// Check if it has completed the cycle
-			if (currentIdx.current === 0) {
+			if (currentIdx.current === players.length -1 ) {
 				// Navigate to next drawing votes
 				if (players.length > currentTurnId + 1){
-					//router.push(`/${currentTurnId + 1}/guess`);
+					clearInterval(interval);
+					console.log("Navigating to next guess")
+					router.push(`/${currentTurnId + 1}/guess`);
 				}
 				else {
-					//router.push(`/gameover`)
+					console.log("Navigating to final results")
+					router.push(`/gameover`)
 				}
 			}
 
 			const updatedPlayers = calculatePoints(players, drawerIdx, guessId, setPlayers)
 			// Show the partial results
 			setShowPartialResults(true);	
-			
-			
 
 			// Update the current index for the next iteration
 			currentIdx.current = (currentIdx.current + 1) % turnOrder.length;
@@ -114,7 +114,7 @@ const ShowPartialResults = () => {
 			clearInterval(interval);
 		  }
 		};
-	  }, [players, turnOrder, drawerIdx, guessId]);
+	  }, [turnOrder, drawerIdx]);
 	
 
 
