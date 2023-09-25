@@ -44,7 +44,7 @@ const ShowPartialResults = () => {
 		let drawerIdx_: number = -1;
 
 		const resultsFetchData = async () => {
-			const result = await fetchPlayersData(sala, setPlayers, myId, ()=>{});
+			const result = await fetchPlayersData(sala,  ()=>{}, myId, ()=>{});
 			if (result) {
 			  const { playersData } = result;
 			  const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];	
@@ -122,7 +122,7 @@ const ShowPartialResults = () => {
 	return (
 		<div className="flex flex-col justify-center items-center">
 		<div className="flex flex-col justify-center items-center">
-    <h1 className="text-3xl font-bold mb-4">Votes</h1>
+    <h1 className="text-3xl font-bold mb-4">Results</h1>
     {showPartialResults && (
         <div className="bg-white rounded-lg shadow-lg p-6 w-full md:w-1/2">
             {guessId !== null && (
@@ -155,7 +155,7 @@ const ShowPartialResults = () => {
                                     .filter(player => player.guessVoted === players.find(p => p.turnId === guessId)?.guessMade)
                                     .map((player, index) => (
                                         <li key={index} className="mb-1 text-lg font-medium">
-                                            {player.name} contributed <span className="font-semibold">100</span> points
+                                            {player.name} contributed with <span className="font-semibold">100</span> points to {players.find(player => player.turnId === guessId)?.name}
                                         </li>
                                     ))}
                             </ul>
