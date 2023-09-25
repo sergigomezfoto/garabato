@@ -10,11 +10,12 @@ import { useState, useEffect } from "react";
 
 type Player = {
 	playerFields: {
+		guessVoted: string;
+		phrase: string;
 		turnId: number;
 		name: string;
 		drawing: string;
 		guessMade: string;
-		// Add other properties as needed
 	};
 };
 
@@ -93,18 +94,24 @@ const VoteDrawing = () => {
 						<h1>Vota lo que crees que es.</h1>
 
 						<ul className="flex flex-wrap justify-center items-center gap-4">
-							{players
-								.filter((player: Player) => player.playerFields.guessMade)
-								.map((player: Player, index: number) => (
-									<button
-										key={index}
-										value={vote}
-										className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
-										onClick={() => handleVote(player.playerFields.guessMade)}
-									>
-										{player.playerFields.guessMade}
-									</button>
-								))}
+							{players.map((player: Player, index: number) => (
+								<button
+									key={index}
+									value={vote}
+									className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+									onClick={() =>
+										handleVote(
+											player.playerFields.turnId === turnIdNumber
+												? player.playerFields.phrase
+												: player.playerFields.guessMade
+										)
+									}
+								>
+									{player.playerFields.turnId === turnIdNumber
+										? player.playerFields.phrase
+										: player.playerFields.guessMade}
+								</button>
+							))}
 						</ul>
 					</div>
 				) : (

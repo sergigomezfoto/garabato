@@ -82,8 +82,6 @@ const GuessDrawing = () => {
 							className="m-5"
 						/>
 						<h1>Descríbelo con pocas palabras.</h1>
-						<p>{myId}</p>
-						<p>{sala}</p>
 						<form onSubmit={handleSubmit}>
 							<input
 								className="m-3"
