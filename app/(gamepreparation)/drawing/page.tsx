@@ -83,7 +83,7 @@ const Drawing = () => {
     console.log('playersDrawDone.length: ',playersDrawDone.length);
     console.log('draw: ',draw);  
     if (draw === true && players.length === playersDrawDone.length) {
-      router.push('/gameover');
+      router.push('/0/guess');
     }
   }, [playersDrawDone, draw, router, players.length]);
 
