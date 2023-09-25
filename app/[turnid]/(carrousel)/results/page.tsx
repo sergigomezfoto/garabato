@@ -80,10 +80,10 @@ const ShowPartialResults = () => {
 			if (currentIdx.current === 0) {
 				// Navigate to next drawing votes
 				if (players.length > currentTurnId + 1){
-					//router.push(`/${currentTurnId + 1}/guess`);
+					router.push(`/${currentTurnId + 1}/guess`);
 				}
 				else {
-					//router.push(`/finalresults?`)
+					router.push(`/gameover`)
 				}
 			}
 
