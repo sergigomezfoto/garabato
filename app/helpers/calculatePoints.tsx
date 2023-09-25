@@ -35,7 +35,6 @@ const calculatePoints = (players: Player[], drawerIdx: number, guessId: number, 
                 });
             }
 
-
         }
 
         // Update the state

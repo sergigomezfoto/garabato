@@ -59,13 +59,13 @@ const ShowPartialResults = () => {
 			  const drawerTurn = turnOrder_.splice(drawerIdx_, 1)[0];
 			  turnOrder_.push(drawerTurn);
 			  setTurnOrder(turnOrder_);
-			  setGuessId(turnOrder[0])
+			  setGuessId(turnOrder_[0])
+			  console.log(`Results: fetch players data executed - sala: ${sala}, myId: ${myId}, currentTurnId: ${currentTurnId}, drawer turnId: ${mappedPlayersData[drawerIdx_].turnId ?? null}, turnOrder: ${turnOrder_}, players length ${mappedPlayersData.length}`)
 			}
 		  };
 		  
 		  resultsFetchData();
-		  console.log(`Results: fetch players data executed - sala: ${sala}, myId: ${myId}, currentTurnId: ${currentTurnId}, drawer: ${drawerIdx_}, turnOrder: ${turnOrder}, players length ${players.length}`)
-	}, []);
+	}, [currentIdx]);
 
 	//it sets a time interval and executed the callback function inside it
 	useEffect(() => {
@@ -80,10 +80,10 @@ const ShowPartialResults = () => {
 			if (currentIdx.current === 0) {
 				// Navigate to next drawing votes
 				if (players.length > currentTurnId + 1){
-					router.push(`/${currentTurnId + 1}/guess`);
+					//router.push(`/${currentTurnId + 1}/guess`);
 				}
 				else {
-					router.push(`/gameover`)
+					//router.push(`/gameover`)
 				}
 			}
 
