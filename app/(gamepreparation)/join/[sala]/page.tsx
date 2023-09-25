@@ -34,18 +34,22 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
   useEffect(() => {    
     // Comprova si la sala existeix i si està tancada
     const checkSalaExists = async () => {
-      const salaRef = doc(db, 'grabatoTest', params.sala);
-      const docSnapshot = await getDoc(salaRef);
-      if (docSnapshot.exists()) {
-        setSalaExists(true);
-        setSalaClosed(docSnapshot.data().closedRoom);
-      } else {
-        setSalaExists(false);
+      try {
+        const salaRef = doc(db, 'grabatoTest', params.sala);
+        const docSnapshot = await getDoc(salaRef);
+        if (docSnapshot.exists()) {
+          setSalaExists(true);
+          setSalaClosed(docSnapshot.data().closedRoom);
+        } else {
+          setSalaExists(false);
+        }
+      } catch (error) {
+        console.error("Error comprovant si la sala existeix:", error);
+        //vull fer coses aqui?
       }
     };
     checkSalaExists();
-
-  }, []);
+}, []);
 
 
   if (salaExists === null) {
