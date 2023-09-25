@@ -7,14 +7,9 @@ import { db } from "@/firebase/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import React from "react";
 
 const GuessDrawing = () => {
-	const localStorageItem = localStorage.getItem("GarabatoTest");
-	const { playerId: myId, sala } = JSON.parse(localStorageItem);
-	console.log("from local storage", myId, sala);
 	const [myTurn, setMyTurn] = useState<any>();
-
 	const { turnid } = useParams();
 	const turnIdNumber = parseInt(turnid as string, 10);
 	const router = useRouter();
@@ -22,16 +17,28 @@ const GuessDrawing = () => {
 	const [actionStatus, setActionStatus] = useState<boolean>(false);
 	const [players, setPlayers] = useState<any>();
 	const [actionList, setActionList] = useState<any>();
-	const [currentPlayer, setCurrentPlayer] = useState();
+	const [currentPlayer, setCurrentPlayer] = useState<{
+		playerFields: { name: string; drawing: string; turnId: number };
+	} | null>(null);
 	const [guess, setGuess] = useState("");
 
-	//Fetch all players data.
+	const localStorageItem = localStorage.getItem("GarabatoTest");
+	const { playerId: myId, sala: sala } = JSON.parse(localStorageItem);
+
+	//Fetch all players data and set up listener
 	useEffect(() => {
 		fetchPlayersData(sala, setPlayers, myId, setMyTurn);
-		console.log(myTurn);
-	}, []);
 
-	console.log("from fetching", players, myTurn);
+		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
+		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
+			const playersDone = snapshot.docs
+				.map((doc) => doc.data().guessMade)
+				.filter((value) => value !== undefined);
+			setActionList(playersDone);
+		});
+
+		return () => unsubscribePlayers();
+	}, []);
 
 	//Filter player based on turnIdNumber.
 	useEffect(() => {
@@ -50,34 +57,18 @@ const GuessDrawing = () => {
 		}
 	}, [players]);
 
-	console.log("Current player is ", currentPlayer);
-
 	// Handle form submit
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		await handleUpdate(sala, myId, guess, "guessMade", setActionStatus);
 	};
 
-	//Listen to databse and control player status
-	useEffect(() => {
-		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
-		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
-			const playersDone = snapshot.docs
-				.map((doc) => doc.data().guessMade)
-				.filter((value) => value !== undefined);
-			setActionList(playersDone);
-		});
-
-		return () => unsubscribePlayers();
-	}, []);
-
 	//Reroute players when all players are done.
 	useEffect(() => {
 		if (actionStatus === true && players?.length === actionList?.length + 1) {
-			console.log("now all routed!");
-			//router.push(`/${turnIdNumber}/vote`);
+			router.push(`/${turnIdNumber}/vote`);
 		}
-	}, [actionList]);
+	}, [actionList, actionStatus]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
@@ -115,6 +106,7 @@ const GuessDrawing = () => {
 					<ProgressBar
 						totalPlayers={players.length}
 						playersReady={actionList.length + 1}
+						text="Espera a que todos los jugadores envien su palabra."
 					/>
 				)
 			) : (
