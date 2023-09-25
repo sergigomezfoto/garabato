@@ -7,6 +7,7 @@ import { db } from "@/firebase/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const GuessDrawing = () => {
 	const [myTurn, setMyTurn] = useState<any>();
@@ -70,7 +71,7 @@ const GuessDrawing = () => {
 				}
 			}
 		}
-	}, [players]);
+	}, [players, turnIdNumber, myTurn]);
 
 	// Handle form submit
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -83,7 +84,7 @@ const GuessDrawing = () => {
 		if (actionStatus === true && players?.length === actionList?.length + 1) {
 			router.push(`/${turnIdNumber}/vote`);
 		}
-	}, [actionList, actionStatus]);
+	}, [actionList, actionStatus, router, turnIdNumber, players?.length]);
 
 	return (
 		<div className="flex flex-col justify-center items-center">
