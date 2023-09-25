@@ -30,7 +30,7 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
     } else {
       console.log('No sóc el creador');
     }
-  }, []);
+  }, [currentPath]);
 
   useEffect(() => {    
     // Comprova si la sala existeix i si està tancada
@@ -53,7 +53,7 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
       }
     };
     checkSalaExists();
-}, []);
+}, [params.sala]);
 
 
   if (salaExists === null) {
