@@ -37,7 +37,7 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
       console.log('WaitingRoom: useEffect return');
       unsubscribe()};
       }, [router,sala]);
-  // }, [sala, router]);
+
 
 
   /**
