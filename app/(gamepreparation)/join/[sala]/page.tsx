@@ -41,7 +41,8 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
         if (docSnapshot.exists()) {
           setSalaExists(true);
           setSalaClosed(docSnapshot.data().closedRoom);
-          console.log('La sala existeix');
+          console.log('La sala existeix, i està tancada? ', docSnapshot.data().closedRoom);
+          
         } else {
           setSalaExists(false);
           console.log('La sala no existeix');
