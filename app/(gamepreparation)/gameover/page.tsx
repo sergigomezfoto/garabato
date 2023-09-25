@@ -20,12 +20,10 @@ interface Player {
 const GameOver = () => {
     const router = useRouter();
     const [players, setPlayers] = useState<Player[]>([]);
-    const [p, setP] = useState<Player[]>([]);
     const [playersOrder, setPlayersOrder] = useState<Player[]>([])
     const [sala, setSala] = useState<String>("");
 
     useEffect(() => {
-        loadData();
         orderData();
         //console.log(p);
     }, []);
@@ -35,7 +33,7 @@ const GameOver = () => {
         setPlayersOrder(sortedList);
     }
 
-    const loadData = () => {
+    const loadPlayers = () => {
         const storedData = localStorage.getItem('GarabatoTest');
         if (storedData) {
             const data = JSON.parse(storedData);
@@ -51,12 +49,12 @@ const GameOver = () => {
                     turnId: doc.data().turnId,
                 }));
 
-                setP(allPlayers);
+                setPlayers(allPlayers);
             });
         }
     }
 
-    const loadPlayers = () => {
+ /*   const loadPlayers = () => {
         //Simulación de puntuación
         if (players.length === 0) {
             for (let i = 0; i < 10; i++) {
@@ -73,7 +71,7 @@ const GameOver = () => {
             }
         }
 
-    }
+    }*/
 
     if (playersOrder.length === 0) {
         loadPlayers();
