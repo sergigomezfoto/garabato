@@ -32,7 +32,7 @@ export default function RootLayout({
 					<div className="wrapper">
 						<header>
 							Garabato
-							<BackgroundMusic audioFile="/DoodleFitSong.mp3" />
+							<BackgroundMusic audioFile="/DoodleFitSongShort.mp3" />
 						</header>
 
 						<main>{children}</main>
