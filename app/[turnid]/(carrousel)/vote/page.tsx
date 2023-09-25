@@ -96,24 +96,25 @@ const VoteDrawing = () => {
 	}, [actionList, actionStatus]);
 
 	return (
-		<div className="flex flex-col justify-center items-center">
+		// <div className="flex flex-col justify-center items-center">
+		<>
 			{currentPlayer ? (
 				actionStatus === false ? (
-					<div className="flex flex-col items-center space-y-2">
-						<h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1>
+					<div className="flex flex-col items-center space-y-1">
+						{/* <h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1> */}
 						<img
 							src={currentPlayer.playerFields.drawing}
 							alt="Dibujo"
-							className="m-5"
+							className="m-2"
 						/>
-						<h1>Vota lo que crees que es.</h1>
+						<h1>El dibujo de {currentPlayer.playerFields.name} es...</h1>
 
-						<ul className="flex flex-wrap justify-center items-center gap-4">
+						{/* <ul className="flex flex-wrap justify-center items-center gap-4"> */}
 							{players.map((player: Player, index: number) => (
 								<button
 									key={index}
 									value={vote}
-									className="p-2 bg-orange-500 m-1 rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+									className="p-1 bg-orange-500  rounded-lg text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
 									onClick={() =>
 										handleVote(
 											player.playerFields.turnId === turnIdNumber
@@ -127,7 +128,7 @@ const VoteDrawing = () => {
 										: player.playerFields.guessMade}
 								</button>
 							))}
-						</ul>
+						{/* </ul> */}
 					</div>
 				) : (
 					<ProgressBar
@@ -139,7 +140,8 @@ const VoteDrawing = () => {
 			) : (
 				<p>No se ha encontrado ningun jugador con el turnid: {turnid}</p>
 			)}
-		</div>
+			{/* </div> */}
+		</>
 	);
 };
 
