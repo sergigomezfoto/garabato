@@ -4,6 +4,7 @@ import InitialUserForm from '../../../../components/InitialUserForm';
 import WaitingRoom from '../../../../components/WaitingRoom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase';
+import { log } from 'console';
 
 
 type JoinPageProps = {
@@ -40,8 +41,10 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
         if (docSnapshot.exists()) {
           setSalaExists(true);
           setSalaClosed(docSnapshot.data().closedRoom);
+          console.log('La sala existeix');
         } else {
           setSalaExists(false);
+          console.log('La sala no existeix');
         }
       } catch (error) {
         console.error("Error comprovant si la sala existeix:", error);
