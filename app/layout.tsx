@@ -37,7 +37,7 @@ export default function RootLayout({
 						</main>
 
 						<footer>
-							<p>Sergi Gómez, Pablo Mena, Celeste Ortiz & Oriol Rocabert</p>
+							<p>Sergi, Pablo, Celeste & Oriol</p>
 							<a
 								href="https://github.com/sergigomezfoto/garabato"
 								target="_blank"
