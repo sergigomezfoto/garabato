@@ -22,22 +22,37 @@ const GuessDrawing = () => {
 	} | null>(null);
 	const [guess, setGuess] = useState("");
 
-	const localStorageItem = localStorage.getItem("GarabatoTest");
-	const { playerId: myId, sala: sala } = JSON.parse(localStorageItem);
+	const [myId, setMyId] = useState("");
+	const [sala, setSala] = useState("");
 
 	//Fetch all players data and set up listener
 	useEffect(() => {
-		fetchPlayersData(sala, setPlayers, myId, setMyTurn);
+		const localStorageItem = localStorage.getItem("GarabatoTest");
 
-		const playersCollectionRef = collection(db, "grabatoTest", sala, "players");
-		const unsubscribePlayers = onSnapshot(playersCollectionRef, (snapshot) => {
-			const playersDone = snapshot.docs
-				.map((doc) => doc.data().guessMade)
-				.filter((value) => value !== undefined);
-			setActionList(playersDone);
-		});
+		if (localStorageItem) {
+			const { playerId: field1, sala: field2 } = JSON.parse(localStorageItem);
+			setMyId(field1);
+			setSala(field2);
+			fetchPlayersData(field2, setPlayers, field1, setMyTurn);
 
-		return () => unsubscribePlayers();
+			const playersCollectionRef = collection(
+				db,
+				"grabatoTest",
+				field2,
+				"players"
+			);
+			const unsubscribePlayers = onSnapshot(
+				playersCollectionRef,
+				(snapshot) => {
+					const playersDone = snapshot.docs
+						.map((doc) => doc.data().guessMade)
+						.filter((value) => value !== undefined);
+					setActionList(playersDone);
+				}
+			);
+
+			return () => unsubscribePlayers();
+		}
 	}, []);
 
 	//Filter player based on turnIdNumber.
