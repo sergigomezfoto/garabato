@@ -47,7 +47,9 @@ const ShowPartialResults = () => {
 			const result = await fetchPlayersData(sala, setPlayers, myId, ()=>{});
 			if (result) {
 			  const { playersData } = result;
-			  const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];
+			  const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];	
+			  setPlayers(mappedPlayersData)
+
 			  // Find the player who is the current drawer
 			  drawerIdx_ = mappedPlayersData.findIndex(player => player.turnId === currentTurnId)
 			  setDrawerIdx(drawerIdx_);
@@ -71,7 +73,7 @@ const ShowPartialResults = () => {
 		console.log(`Results: entering interval useEffect - turnOrder: ${turnOrder},  drawer: ${drawerIdx}, `)
 		if (turnOrder.length > 0 && drawerIdx !== null && guessId !== null) {
 			
-			console.log(`Results: interval points useEffect executed: currentIdx ${currentIdx.current}, guessId: ${guessId}`)
+			console.log(`Results: interval points useEffect executed: currentIdx ${currentIdx.current}, guessId: ${guessId}}`)
 		  	interval = setInterval(() => {
 
 			// Check if it has completed the cycle
@@ -120,32 +122,45 @@ const ShowPartialResults = () => {
 	return (
 		<div className="flex flex-col justify-center items-center">
 		<h1 className="text-3xl font-bold mb-4">Votes</h1>
-		{showPartialResults && (
+		{(showPartialResults) && (
 			<div className="bg-white rounded-lg shadow-lg p-6 w-full md:w-1/2">
 			{guessId !== null && (
 				<>
-				<p className="text-lg italic mb-4">
-					{players.find(player => player.turnId === guessId)?.name} tried to fooled you with: 
-				</p>
-				<h2 className="text-2xl font-semibold mb-2">
-					{players.find(player => player.turnId === guessId)?.guessMade}
-				</h2>
-				<h3 className="text-xl font-medium mb-3">Players fooled:</h3>
-				<ul className="list-decimal list-inside">
-					{players
-					.filter(player => player.guessVoted === players.find(p => p.turnId === guessId)?.guessMade)
-					.map((player, index) => (
-						<li key={index} className="mb-1">
-						{player.name} contributed <span className="font-semibold">{player.pointsForAuthor ?? 0}</span> points
-						</li>
-					))}
-				</ul>
-
-				{drawerIdx !== null && guessId === players[drawerIdx]?.turnId && (
-					<p className="text-red-500 font-medium mt-4">
-					Points for drawer: {}
-					</p>
-				)}
+				{drawerIdx !== null && guessId === players[drawerIdx]?.turnId ? (
+                <p className="text-red-500 font-medium mt-4">
+                    
+					<ul className="list-decimal list-inside">
+                        {players
+                        .filter(player => player.guessVoted === players.find(p => p.turnId === guessId)?.guessMade)
+                        .map((player, index) => (
+                            <li key={index} className="mb-1">
+                                {player.name} guessed the original title!
+                            </li>
+                        ))}
+						Points for drawer: 100 <br></br>
+						Points for player: 100
+                    </ul>
+                </p>
+            	) : (
+                <>
+                    <p className="text-lg italic mb-4">
+                        {players.find(player => player.turnId === guessId)?.name} tried to fool you with: 
+                    </p>
+                    <h2 className="text-2xl font-semibold mb-2">
+                        {players.find(player => player.turnId === guessId)?.guessMade}
+                    </h2>
+                    <h3 className="text-xl font-medium mb-3">Players fooled:</h3>
+                    <ul className="list-decimal list-inside">
+                        {players
+                        .filter(player => player.guessVoted === players.find(p => p.turnId === guessId)?.guessMade)
+                        .map((player, index) => (
+                            <li key={index} className="mb-1">
+                                {player.name} contributed <span className="font-semibold">100</span> points
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
 				</>
 			)}
 			</div>
