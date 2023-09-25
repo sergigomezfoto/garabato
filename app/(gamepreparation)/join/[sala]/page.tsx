@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import InitialUserForm from '../../../../components/InitialUserForm';
 import WaitingRoom from '../../../../components/WaitingRoom';
 import { doc, getDoc } from 'firebase/firestore';

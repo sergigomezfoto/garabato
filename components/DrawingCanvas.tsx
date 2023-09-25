@@ -3,7 +3,6 @@
 
 import { ReactSketchCanvas, ReactSketchCanvasRef } from 'react-sketch-canvas';
 import { useState,useEffect } from 'react';
-import { randomInt } from 'crypto';
 import randomCanvasColors from '@/app/helpers/randomCanvasColors';
 
 
@@ -15,7 +14,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({  canvasRef ,onChange = ()
   const [colors, setColors] = useState(() => randomCanvasColors()); // Es genera una vegada a l'iniciar el component
   const [strokeColor, setStrokeColor] = useState(colors[0]);
   const [numInteraction, setNumInteraction] = useState(0);
-  console.log("canvasRef");
+
   
   useEffect(() => {
     // Hack to work around Firfox bug in react-sketch-canvas
