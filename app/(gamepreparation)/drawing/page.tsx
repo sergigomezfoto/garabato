@@ -83,9 +83,9 @@ const Drawing = () => {
     console.log('playersDrawDone.length: ',playersDrawDone.length);
     console.log('draw: ',draw);  
     if (draw === true && players.length === playersDrawDone.length) {
-      router.push('/0/guess');
+      router.push('/gameover');
     }
-  }, [playersDrawDone,draw]);
+  }, [playersDrawDone, draw, router, players.length]);
 
   const loadPlayers = () => {
     const storedData = localStorage.getItem('GarabatoTest');
