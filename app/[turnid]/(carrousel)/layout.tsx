@@ -1,7 +1,6 @@
 "use client";
 
 import Timer from "@/components/Timer";
-import { truncate } from "fs";
 import { usePathname, useRouter, useParams } from "next/navigation";
 
 interface CarrouselLayoutProps {
@@ -22,12 +21,12 @@ const CarrouselLayout = ({ children }: CarrouselLayoutProps) => {
 	return (
 		<div>
 			{children}
-			<Timer
+			{/*	<Timer
 				turnid={turnidNumber}
 				currentRoute={pathname}
 				loopCount={3}
 				onEnd={consoleLog}
-			/>
+	/> */}
 		</div>
 	);
 };
