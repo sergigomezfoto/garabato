@@ -1,5 +1,3 @@
-import { Timestamp } from "firebase/firestore";
-
 
 export type Player = {
     id: string;
@@ -11,7 +9,6 @@ export type Player = {
     phrase?: string;
 	guessMade?: string;
 	guessVoted?: string;
-	pointsForAuthor?: number;
 	score?: number;
 	totalScore?: number;
 };

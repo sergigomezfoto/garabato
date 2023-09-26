@@ -3,21 +3,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { fetchPlayersData } from "../../hooks/databaseDataRetreival";
 import calculatePoints from "@/app/helpers/calculatePoints"
-
-type Player = {
-    id: string;
-	isMaster?: boolean;
-    name: string;
-    avatar: string;
-	turnId?: number; //This is the turnId each player are the drawer
-	drawing?: string
-    phrase?: string;
-	guessMade?: string;
-	guessVoted?: string;
-	pointsForAuthor?: number;
-	score?: number;
-	totalScore?: number;
-};
+import updatePlayers from "@/app/hooks/updatePlayersDB"
+import {Player} from "@/types/types"
 
 const ShowPartialResults = () => {
 	
@@ -28,32 +15,33 @@ const ShowPartialResults = () => {
 
 	
 	//Use states
+	const [sala, setSala] = useState<string>("")
     const [players, setPlayers] = useState<Player[]>([]);
 	const [guessId, setGuessId] = useState<number|null>(null); 
 	const [showPartialResults, setShowPartialResults] = useState(false);
 	const [drawerIdx, setDrawerIdx] =useState<number|null>(null)
 	const [turnOrder, setTurnOrder] = useState<number[]>([]);
 	const [currentIdx, setcurrentIdx] = useState(1); // because first useEffect already set the 0 idx
+	const [updatePlayerReady, setUpdatePlayerReady] = useState<boolean>(false)
 
 	const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 	
 	//Fetch all players data.
 	useEffect(() => {
 		//Local storage
 		const localStorageItem: string | null = localStorage.getItem("GarabatoTest");
 		const { playerId: myId, sala } = localStorageItem ? JSON.parse(localStorageItem) : { playerId: "", sala: "" };
-		let drawerIdx_: number = -1;
-
+		setSala(sala)
+		
 		const resultsFetchData = async () => {
 			const result = await fetchPlayersData(sala,  ()=>{}, myId, ()=>{});
 			if (result) {
-			  const { playersData } = result;
-			  const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];	
-			  setPlayers(mappedPlayersData)
-
+				const { playersData } = result;
+				const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];	
+				setPlayers(mappedPlayersData)
+				
 			  // Find the player who is the current drawer
-			  drawerIdx_ = mappedPlayersData.findIndex(player => player.turnId === currentTurnId)
+			  const drawerIdx_ = mappedPlayersData.findIndex(player => player.turnId === currentTurnId)
 			  setDrawerIdx(drawerIdx_);
 
 			  // Initialize turnOrder state, putting the drawer's ID last
@@ -76,19 +64,7 @@ const ShowPartialResults = () => {
 			let guessId_ = guessId			
 			const iterateGuesses = async () => {
 
-				console.log(`Results: interval points useEffect executed: guessId: ${guessId_}}`)
-				const updatedPlayers = calculatePoints(players, drawerIdx, guessId_, setPlayers);
-				setShowPartialResults(true);
-				await delay(3000);
-
-				setShowPartialResults(false);
-				await delay(1000);
-				// Update the current index for the next iteration
-				guessId_ = turnOrder[currentIdx];
-				setGuessId(guessId_);
-				setcurrentIdx(currentIdx + 1) 
-				
-				if (currentIdx === (players.length -1) ) {
+				if (currentIdx === (players.length -1)) {
 					// Navigate to next drawing votes
 					if (players.length > currentTurnId + 1){
 						await delay(3000)
@@ -102,10 +78,30 @@ const ShowPartialResults = () => {
 					}
 				}
 
+				console.log(`Results: interval points useEffect executed: guessId: ${guessId_}}`)
+				const {updatedPlayers} = calculatePoints(players, drawerIdx, guessId_, setPlayers);
+				updatePlayers(updatedPlayers, sala, setUpdatePlayerReady)
+
+				setShowPartialResults(true);
+				await delay(3000);
+
+				setShowPartialResults(false);
+				await delay(1000);
+				// Update the current index for the next iteration
+				guessId_ = turnOrder[currentIdx];
+				setGuessId(guessId_);
+				setcurrentIdx(currentIdx + 1) 
+				
+
 			};
 
 			iterateGuesses();
+			return () => {
+				console.log('Component is unmounting.');
+				const resetGuessAndVoted = true
+				updatePlayers(players, sala, setUpdatePlayerReady, resetGuessAndVoted)
 
+			}
 	  	}
 	}, [turnOrder, drawerIdx, guessId]);
 	
