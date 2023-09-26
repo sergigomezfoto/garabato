@@ -37,7 +37,10 @@ const ShowPartialResults = () => {
 			const result = await fetchPlayersData(sala,  ()=>{}, myId, ()=>{});
 			if (result) {
 				const { playersData } = result;
-				const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];	
+				const mappedPlayersData = playersData.map(player => {
+					const newplayerFields = player.playerFields
+					newplayerFields.id = player.playerID
+					return newplayerFields}) as Player[];	
 				setPlayers(mappedPlayersData)
 				
 			  // Find the player who is the current drawer
@@ -69,12 +72,15 @@ const ShowPartialResults = () => {
 					// Navigate to next drawing votes
 					if (players.length > currentTurnId + 1){
 						await delay(delay_ms)
-						console.log("Navigating to next guess")
+						console.log("Navigating to next guess")	
+						await deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
 						router.push(`/${currentTurnId + 1}/guess`);
+
 					}
 					else {
 						await delay(delay_ms)
 						console.log("Navigating to final results")
+						await deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
 						router.push(`/gameover`)
 					}
 				}
@@ -87,7 +93,7 @@ const ShowPartialResults = () => {
 				await delay(delay_ms);
 
 				setShowPartialResults(false);
-				await delay(delay_ms);
+				await delay(1000);
 				// Update the current index for the next iteration
 				guessId_ = turnOrder[currentIdx];
 				setGuessId(guessId_);
@@ -95,9 +101,9 @@ const ShowPartialResults = () => {
 			};
 
 			iterateGuesses();
+
 			return () => {
-				console.log('Component is unmounting.');
-				deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
+				console.log(`Component is unmounting.  sala: ${sala}, drawerTurnID: ${players[drawerIdx].turnId}, ${JSON.stringify(players)}`);
 			}
 	  	}
 	}, [turnOrder, drawerIdx, guessId]);
