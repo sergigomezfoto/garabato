@@ -22,7 +22,6 @@ const ShowPartialResults = () => {
 	const [drawerIdx, setDrawerIdx] =useState<number|null>(null)
 	const [turnOrder, setTurnOrder] = useState<number[]>([]);
 	const [currentIdx, setcurrentIdx] = useState(1); // because first useEffect already set the 0 idx
-	const [updatePlayerReady, setUpdatePlayerReady] = useState<boolean>(false)
 
 	const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 	
@@ -65,7 +64,8 @@ const ShowPartialResults = () => {
 		console.log(`Results: entering interval useEffect - turnOrder: ${turnOrder} `)
 		if (turnOrder.length > 0 && drawerIdx !== null && guessId !== null) {
 			const delay_ms = 7000
-			let guessId_ = guessId			
+			let guessId_ = guessId	
+					
 			const iterateGuesses = async () => {
 
 				if (currentIdx === (players.length -1)) {
@@ -87,7 +87,7 @@ const ShowPartialResults = () => {
 
 				console.log(`Results: interval points useEffect executed: guessId: ${guessId_}}`)
 				const {updatedPlayers} = calculatePoints(players, drawerIdx, guessId_, setPlayers);
-				updatePlayersResults(updatedPlayers, sala, setUpdatePlayerReady)
+				updatePlayersResults(updatedPlayers, sala)
 
 				setShowPartialResults(true);
 				await delay(delay_ms);
@@ -103,7 +103,7 @@ const ShowPartialResults = () => {
 			iterateGuesses();
 
 			return () => {
-				console.log(`Component is unmounting.  sala: ${sala}, drawerTurnID: ${players[drawerIdx].turnId}, ${JSON.stringify(players)}`);
+				console.log(`Component is unmounting.`);
 			}
 	  	}
 	}, [turnOrder, drawerIdx, guessId]);

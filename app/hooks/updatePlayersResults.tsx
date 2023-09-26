@@ -7,7 +7,6 @@ const db = getFirestore();
 export async function updatePlayersResults(
   players: Player[],
   sala: string,
-  setUpdatePlayerReady: Dispatch<SetStateAction<boolean>>,
 ) {
   // Create a batch instance
   const batch = writeBatch(db);
@@ -16,18 +15,23 @@ export async function updatePlayersResults(
     players.forEach((player) => {
       // Create reference to each player in DB.
       const docRef = doc(db, "grabatoTest", sala, "players", player.id);
-
-      // Stage each update in the batch
-      batch.update(docRef, {
-        score: player.score,
-      });
+      if (player.score) {
+        // Stage each update in the batch
+        batch.update(docRef, {
+          score: player.score,
+        })
+      } else {
+        batch.update(docRef, {
+          score: 0,
+        })
+      }
+        ;
     });
 
     // Commit the batch
     await batch.commit();
 
     console.log("Players updated successfully!");
-    setUpdatePlayerReady(true);
   } catch (error) {
     console.error("Error updating players:", error);
   }
