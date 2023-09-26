@@ -2,7 +2,7 @@
 
 import { db } from '@/firebase/firebase';
 import { onSnapshot, doc, updateDoc, writeBatch } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { executeApiGet } from '@/app/helpers/executApiGet';
 
@@ -23,10 +23,27 @@ interface WaitingRoomProps {
 const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   const players = usePlayersListener(sala);  // hook personalitzat per veure els jugador que hi ha
   const router = useRouter();
+  console.log('---PLAYERS LENGHT---- ', players.length);
+
+  const [userNumber, setUserNumber] = useState(0);
+  const necessaryUserNumber = 3;
+  useEffect(() => {
+    setUserNumber(players.length);
+  }, [players]);
+
+  const missingUsers = necessaryUserNumber - userNumber;
+  const text = userNumber >= necessaryUserNumber 
+    ? "Cerrar sala" 
+    : missingUsers === 1 
+      ? "Falta 1 usuario" 
+      : `Faltan ${missingUsers} usuarios`;
+  
+  const isDisabled = userNumber < necessaryUserNumber;
+
 
   useEffect(() => {
     console.log('WaitingRoom: useEffect');
-    
+
     const salaRef = doc(db, 'grabatoTest', sala);
     const unsubscribe = onSnapshot(salaRef, (docSnapshot) => {
       if (docSnapshot.exists() && docSnapshot.data()?.closedRoom) {
@@ -35,15 +52,11 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
     });
     return () => {
       console.log('WaitingRoom: useEffect return');
-      unsubscribe()};
-      }, [router,sala]);
+      unsubscribe()
+    };
+  }, [router, sala]);
 
 
-
-  /**
-   * The `closeRoom` function is executed only on the  room creator, 
-   * fetch the phrases from the API and gives an order to turnIds for each player.
-   */
   const handleOnClick = async () => {
 
     try {
@@ -82,8 +95,8 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
         ))}
       </div>
       {isMaster &&
-        <ButtonPromise onClick={handleOnClick}>
-          Cerrar sala
+        <ButtonPromise onClick={handleOnClick} isDisabled={isDisabled}>
+          {text}
         </ButtonPromise>
       }
     </>
