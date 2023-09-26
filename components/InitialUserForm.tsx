@@ -47,9 +47,9 @@ const InitialUserForm: React.FC<InitialUserFormProps> = ({ sala, onJoin, master 
   };
 
   return (
-    <><div>Dibújate a ti mismo y escribe tu nombre de usuario.</div>
+    <><div className=' text-center'>Dibújate a ti mismo y escribe tu nombre de usuario.</div>
       <DrawingCanvas canvasRef={canvasRef} onChange={handleCanvasInteraction} />
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-center mb-2">
         <input
           type="text"
           value={username}

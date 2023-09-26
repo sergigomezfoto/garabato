@@ -75,7 +75,7 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
 
   return (
     <>
-      <h2 className="text-2xl font-bold mb-4">jugadores</h2>
+      <h2 className="text-2xl mb-4">jugadores</h2>
       <div className="flex flex-wrap max-w-md justify-center gap-4">
         {players.map((player, index) => (
           <SinglePlayer key={index} avatar={player.avatar} name={player.name} />

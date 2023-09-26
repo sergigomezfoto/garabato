@@ -134,9 +134,9 @@ const Drawing = () => {
         text='Espera que terminen todos los jugadores de dibujar'
       />) : (
         <>
-          <h1 className="text-2xl my-6"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
+          <h1 className=" text-center"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
           <DrawingCanvas canvasRef={canvasRef} onChange={handleCanvasInteraction} />
-          <i className="mb-4">¡Dibuja la frase que te ha tocado!</i>
+          <i className="text-center">¡Dibuja la frase que te ha tocado!</i>
           <ButtonPromise onClick={handleOnClick}
           isDisabled={!isButtonActive}
           >
