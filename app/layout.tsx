@@ -1,4 +1,4 @@
-import Head from "next/head";
+
 import "./globals.css";
 import { Cabin_Sketch } from "next/font/google";
 import type { Metadata } from "next";
@@ -33,7 +33,9 @@ export default function RootLayout({
 						</header>
 
 						<main>
-							{children}
+							<div className="content-wrapper">
+								{children}
+							</div>
 						</main>
 
 						<footer>
@@ -43,7 +45,7 @@ export default function RootLayout({
 								target="_blank"
 								title="Garabato GitHub repository"
 							>
-								<img src="/gh.png" className="w-7" alt="git" />
+								<img src="/gh.png" className="git" alt="git" />
 							</a>
 						</footer>
 					</div>
