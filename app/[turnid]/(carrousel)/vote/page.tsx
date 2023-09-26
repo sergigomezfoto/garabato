@@ -8,6 +8,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import SinglePlayer from "@/components/SinglePlayer";
 
 type Player = {
 	playerFields: {
@@ -30,7 +31,12 @@ const VoteDrawing = () => {
 	const [players, setPlayers] = useState<any>();
 	const [actionList, setActionList] = useState<any>();
 	const [currentPlayer, setCurrentPlayer] = useState<{
-		playerFields: { name: string; drawing: string; turnId: number };
+		playerFields: {
+			name: string;
+			drawing: string;
+			turnId: number;
+			avatar: string;
+		};
 	} | null>(null);
 	const [vote, setVote] = useState("");
 
@@ -101,7 +107,11 @@ const VoteDrawing = () => {
 			{currentPlayer ? (
 				actionStatus === false ? (
 					<div className="flex flex-col items-center space-y-2">
-						<h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1>
+						<h1>Este es el dibujo de:</h1>
+						<SinglePlayer
+							avatar={currentPlayer.playerFields.avatar}
+							name={currentPlayer.playerFields.name}
+						/>
 						<img
 							src={currentPlayer.playerFields.drawing}
 							alt="Dibujo"
@@ -136,7 +146,7 @@ const VoteDrawing = () => {
 					<ProgressBar
 						totalPlayers={players.length}
 						playersReady={actionList.length + 1}
-						text="Espera a que todos los jugadores voten."
+						text="Los jugadores estan votando lo que opinan del dibujo, espera a que todos terminen."
 					/>
 				)
 			) : (
