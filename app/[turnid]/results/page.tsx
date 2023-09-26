@@ -37,7 +37,10 @@ const ShowPartialResults = () => {
 			const result = await fetchPlayersData(sala,  ()=>{}, myId, ()=>{});
 			if (result) {
 				const { playersData } = result;
-				const mappedPlayersData = playersData.map(player => player.playerFields) as Player[];	
+				const mappedPlayersData = playersData.map(player => {
+					const newplayerFields = player.playerFields
+					newplayerFields.id = player.playerID
+					return newplayerFields}) as Player[];	
 				setPlayers(mappedPlayersData)
 				
 			  // Find the player who is the current drawer
@@ -90,7 +93,7 @@ const ShowPartialResults = () => {
 				await delay(delay_ms);
 
 				setShowPartialResults(false);
-				await delay(delay_ms);
+				await delay(1000);
 				// Update the current index for the next iteration
 				guessId_ = turnOrder[currentIdx];
 				setGuessId(guessId_);
