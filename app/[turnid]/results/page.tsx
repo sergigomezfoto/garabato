@@ -69,12 +69,15 @@ const ShowPartialResults = () => {
 					// Navigate to next drawing votes
 					if (players.length > currentTurnId + 1){
 						await delay(delay_ms)
-						console.log("Navigating to next guess")
+						console.log("Navigating to next guess")	
+						await deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
 						router.push(`/${currentTurnId + 1}/guess`);
+
 					}
 					else {
 						await delay(delay_ms)
 						console.log("Navigating to final results")
+						await deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
 						router.push(`/gameover`)
 					}
 				}
@@ -95,9 +98,9 @@ const ShowPartialResults = () => {
 			};
 
 			iterateGuesses();
+
 			return () => {
-				console.log('Component is unmounting.');
-				deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
+				console.log(`Component is unmounting.  sala: ${sala}, drawerTurnID: ${players[drawerIdx].turnId}, ${JSON.stringify(players)}`);
 			}
 	  	}
 	}, [turnOrder, drawerIdx, guessId]);
