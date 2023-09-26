@@ -14,7 +14,7 @@ const getRandomUnusedItem = (set: Set<unknown>, data: string[]) => {
     return item;
 };
 
-const MINLENGHT = 30;
+const MINLENGHT = 20;
 const MINNUM = 1;
 export const GET = async (req: Request, { params }: { params: { slug: string } }) => {
     const { slug } = params;
@@ -28,7 +28,7 @@ export const GET = async (req: Request, { params }: { params: { slug: string } }
 
         }
         if (isNaN(maxlen) || maxlen < MINLENGHT) {
-            return NextResponse.json({  error: `Max length too short to generate phrases. Minimum lenght: ${MINLENGHT}` }, { status: 400 });
+            return NextResponse.json({ error: `Max length too short to generate phrases. Minimum lenght: ${MINLENGHT}` }, { status: 400 });
 
         }
         if (num > data.person.length || num > data.action.length || num > data.place.length) {
@@ -56,7 +56,9 @@ export const GET = async (req: Request, { params }: { params: { slug: string } }
                 }
 
                 const capitalizedRandomPerson = randomPerson.charAt(0).toUpperCase() + randomPerson.slice(1);
-                randomPhrase = `${capitalizedRandomPerson.trim()} ${randomAction.trim()} ${randomPlace.trim()}`;
+                // de manera randopm tornem o accvió o lloc
+                const randomChoice = Math.random() < 0.5 ? randomAction.trim() : randomPlace.trim();
+                randomPhrase = `${capitalizedRandomPerson.trim()} ${randomChoice}`;
             } while (randomPhrase.length > maxlen && attempts < 5000);
 
             if (attempts === 5000) {

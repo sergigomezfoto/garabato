@@ -60,7 +60,7 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   const handleOnClick = async () => {
 
     try {
-      const apiUrl = `${window.location.origin}/api/randomword/${players.length}/30`;
+      const apiUrl = `${window.location.origin}/api/randomword/${players.length}/20`;
       const data = await executeApiGet(apiUrl);
 
       if (data.phrases && data.phrases.length === players.length) {
