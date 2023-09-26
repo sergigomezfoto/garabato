@@ -3,7 +3,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { fetchPlayersData } from "../../hooks/databaseDataRetreival";
 import calculatePoints from "@/app/helpers/calculatePoints"
-import updatePlayers from "@/app/hooks/updatePlayersDB"
+import {updatePlayersResults, deleteGuessesAndVotes} from "@/app/hooks/updatePlayersResults"
 import {Player} from "@/types/types"
 
 const ShowPartialResults = () => {
@@ -58,21 +58,22 @@ const ShowPartialResults = () => {
 	}, [currentTurnId]);
 
 	useEffect(() => {
+
 		console.log(`Results: entering interval useEffect - turnOrder: ${turnOrder} `)
 		if (turnOrder.length > 0 && drawerIdx !== null && guessId !== null) {
-
+			const delay_ms = 7000
 			let guessId_ = guessId			
 			const iterateGuesses = async () => {
 
 				if (currentIdx === (players.length -1)) {
 					// Navigate to next drawing votes
 					if (players.length > currentTurnId + 1){
-						await delay(3000)
+						await delay(delay_ms)
 						console.log("Navigating to next guess")
 						router.push(`/${currentTurnId + 1}/guess`);
 					}
 					else {
-						await delay(3000)
+						await delay(delay_ms)
 						console.log("Navigating to final results")
 						router.push(`/gameover`)
 					}
@@ -80,27 +81,23 @@ const ShowPartialResults = () => {
 
 				console.log(`Results: interval points useEffect executed: guessId: ${guessId_}}`)
 				const {updatedPlayers} = calculatePoints(players, drawerIdx, guessId_, setPlayers);
-				updatePlayers(updatedPlayers, sala, setUpdatePlayerReady)
+				updatePlayersResults(updatedPlayers, sala, setUpdatePlayerReady)
 
 				setShowPartialResults(true);
-				await delay(3000);
+				await delay(delay_ms);
 
 				setShowPartialResults(false);
-				await delay(1000);
+				await delay(delay_ms);
 				// Update the current index for the next iteration
 				guessId_ = turnOrder[currentIdx];
 				setGuessId(guessId_);
-				setcurrentIdx(currentIdx + 1) 
-				
-
+				setcurrentIdx(currentIdx => currentIdx + 1)
 			};
 
 			iterateGuesses();
 			return () => {
 				console.log('Component is unmounting.');
-				const resetGuessAndVoted = true
-				updatePlayers(players, sala, setUpdatePlayerReady, resetGuessAndVoted)
-
+				deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
 			}
 	  	}
 	}, [turnOrder, drawerIdx, guessId]);
