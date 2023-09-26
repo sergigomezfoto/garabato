@@ -1,4 +1,3 @@
-
 import "./globals.css";
 import { Cabin_Sketch } from "next/font/google";
 import type { Metadata } from "next";
@@ -30,12 +29,11 @@ export default function RootLayout({
 					<div className="wrapper">
 						<header>
 							Garabato
+							{/*<BackgroundMusic audioFile="/DoodleFitSongShort.mp3" />*/}
 						</header>
 
 						<main>
-							<div className="content-wrapper">
-								{children}
-							</div>
+							<div className="content-wrapper">{children}</div>
 						</main>
 
 						<footer>

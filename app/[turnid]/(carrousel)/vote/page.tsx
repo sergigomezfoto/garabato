@@ -125,7 +125,9 @@ const VoteDrawing = () => {
 								>
 									{player.playerFields.turnId === turnIdNumber
 										? player.playerFields.phrase
-										: player.playerFields.guessMade}
+										: player.playerFields.turnId !== myTurn
+										? player.playerFields.guessMade
+										: null}
 								</button>
 							))}
 						</ul>
