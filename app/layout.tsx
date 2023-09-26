@@ -1,7 +1,6 @@
 import "./globals.css";
 import { Cabin_Sketch } from "next/font/google";
 import type { Metadata } from "next";
-import BackgroundMusic from "@/components/BackgroundMusic";
 const cabinSketch = Cabin_Sketch({ weight: "400", subsets: ["latin"] });
 export const metadata: Metadata = {
 	title: "Garabato",
