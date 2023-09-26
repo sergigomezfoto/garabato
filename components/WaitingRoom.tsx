@@ -14,12 +14,6 @@ interface WaitingRoomProps {
   isMaster: boolean; // Afegim aquesta propietat
 }
 
-/**
- * The `WaitingRoom` component is a React functional component that displays a waiting room for a game,
- * with a list of players and an option to close the room if the user is the master.
- * @param  - - `sala`: The ID of the room or game session.
- * @returns The component is returning a JSX fragment that includes the following elements:
- */
 const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   const players = usePlayersListener(sala);  // hook personalitzat per veure els jugador que hi ha
   const router = useRouter();
@@ -32,18 +26,16 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   }, [players]);
 
   const missingUsers = necessaryUserNumber - userNumber;
-  const text = userNumber >= necessaryUserNumber 
-    ? "Cerrar sala" 
-    : missingUsers === 1 
-      ? "Falta 1 usuario" 
+  const text = userNumber >= necessaryUserNumber
+    ? "Cerrar sala"
+    : missingUsers === 1
+      ? "Falta 1 usuario"
       : `Faltan ${missingUsers} usuarios`;
-  
   const isDisabled = userNumber < necessaryUserNumber;
 
 
   useEffect(() => {
     console.log('WaitingRoom: useEffect');
-
     const salaRef = doc(db, 'grabatoTest', sala);
     const unsubscribe = onSnapshot(salaRef, (docSnapshot) => {
       if (docSnapshot.exists() && docSnapshot.data()?.closedRoom) {
@@ -103,4 +95,4 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   );
 };
 
-export default WaitingRoom;
+export default WaitingRoom; 

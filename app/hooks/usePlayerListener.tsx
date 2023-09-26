@@ -6,8 +6,7 @@ const usePlayersListener = (sala: string) => {
   const [players, setPlayers] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log('usePlayersListener: useEffect');
-    
+    console.log('usePlayersListener: useEffect');  
     const playersCollectionRef = collection(db, 'grabatoTest', sala, 'players');
     const unsubscribePlayers = onSnapshot(playersCollectionRef, snapshot => {
       const playersData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
