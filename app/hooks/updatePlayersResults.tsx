@@ -19,16 +19,7 @@ export async function updatePlayersResults(
 
       // Stage each update in the batch
       batch.update(docRef, {
-        isMaster: player.isMaster,
-        name: player.name,
-        avatar: player.avatar,
-        turnId: player.turnId,
-        drawing: player.drawing,
-        phrase: player.phrase,
-        guessMade: player.guessMade,
-        guessVoted: player.guessVoted,
         score: player.score,
-        totalScore: player.totalScore,
       });
     });
 
