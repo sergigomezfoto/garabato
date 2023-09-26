@@ -4,7 +4,6 @@ import InitialUserForm from '../../../../components/InitialUserForm';
 import WaitingRoom from '../../../../components/WaitingRoom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/firebase';
-import { log } from 'console';
 
 
 type JoinPageProps = {

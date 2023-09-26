@@ -2,7 +2,7 @@
 
 import { db } from '@/firebase/firebase';
 import { onSnapshot, doc, updateDoc, writeBatch } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { executeApiGet } from '@/app/helpers/executApiGet';
 
@@ -14,19 +14,28 @@ interface WaitingRoomProps {
   isMaster: boolean; // Afegim aquesta propietat
 }
 
-/**
- * The `WaitingRoom` component is a React functional component that displays a waiting room for a game,
- * with a list of players and an option to close the room if the user is the master.
- * @param  - - `sala`: The ID of the room or game session.
- * @returns The component is returning a JSX fragment that includes the following elements:
- */
 const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
   const players = usePlayersListener(sala);  // hook personalitzat per veure els jugador que hi ha
   const router = useRouter();
+  console.log('---PLAYERS LENGHT---- ', players.length);
+
+  const [userNumber, setUserNumber] = useState(0);
+  const necessaryUserNumber = 3;
+  useEffect(() => {
+    setUserNumber(players.length);
+  }, [players]);
+
+  const missingUsers = necessaryUserNumber - userNumber;
+  const text = userNumber >= necessaryUserNumber
+    ? "Cerrar sala"
+    : missingUsers === 1
+      ? "Falta 1 usuario"
+      : `Faltan ${missingUsers} usuarios`;
+  const isDisabled = userNumber < necessaryUserNumber;
+
 
   useEffect(() => {
     console.log('WaitingRoom: useEffect');
-    
     const salaRef = doc(db, 'grabatoTest', sala);
     const unsubscribe = onSnapshot(salaRef, (docSnapshot) => {
       if (docSnapshot.exists() && docSnapshot.data()?.closedRoom) {
@@ -35,19 +44,15 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
     });
     return () => {
       console.log('WaitingRoom: useEffect return');
-      unsubscribe()};
-      }, [router,sala]);
+      unsubscribe()
+    };
+  }, [router, sala]);
 
 
-
-  /**
-   * The `closeRoom` function is executed only on the  room creator, 
-   * fetch the phrases from the API and gives an order to turnIds for each player.
-   */
   const handleOnClick = async () => {
 
     try {
-      const apiUrl = `${window.location.origin}/api/randomword/${players.length}/30`;
+      const apiUrl = `${window.location.origin}/api/randomword/${players.length}/20`;
       const data = await executeApiGet(apiUrl);
 
       if (data.phrases && data.phrases.length === players.length) {
@@ -75,19 +80,19 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
 
   return (
     <>
-      <h2 className="text-2xl font-bold mb-4">jugadores</h2>
+      <h2 className="text-2xl mb-4">jugadores</h2>
       <div className="flex flex-wrap max-w-md justify-center gap-4">
         {players.map((player, index) => (
           <SinglePlayer key={index} avatar={player.avatar} name={player.name} />
         ))}
       </div>
       {isMaster &&
-        <ButtonPromise onClick={handleOnClick}>
-          Cerrar sala
+        <ButtonPromise onClick={handleOnClick} isDisabled={isDisabled}>
+          {text}
         </ButtonPromise>
       }
     </>
   );
 };
 
-export default WaitingRoom;
+export default WaitingRoom; 

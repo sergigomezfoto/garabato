@@ -83,7 +83,7 @@ const Drawing = () => {
     console.log('playersDrawDone.length: ',playersDrawDone.length);
     console.log('draw: ',draw);  
     if (draw === true && players.length === playersDrawDone.length) {
-      router.push('/gameover');
+      router.push('/0/guess');
     }
   }, [playersDrawDone, draw, router, players.length]);
 
@@ -134,9 +134,9 @@ const Drawing = () => {
         text='Espera que terminen todos los jugadores de dibujar'
       />) : (
         <>
-          <h1 className="text-2xl my-6"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
+          <h1 className=" text-center"><strong>{playerData?.phrase || 'cargando...'}</strong></h1>
           <DrawingCanvas canvasRef={canvasRef} onChange={handleCanvasInteraction} />
-          <i className="mb-4">¡Dibuja la frase que te ha tocado!</i>
+          <i className="text-center">¡Dibuja la frase que te ha tocado!</i>
           <ButtonPromise onClick={handleOnClick}
           isDisabled={!isButtonActive}
           >

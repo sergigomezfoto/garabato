@@ -29,9 +29,8 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ textToCopy, className
     return (
         <>
             <button onClick={handleCopyClick} className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600">
-                <i className="fas fa-copy"></i> Copia y envia
+                <i className="fas fa-copy"></i> {isCopied? '¡Copiado!' : 'Copia'}
             </button>
-            {isCopied && <span className="ml-2 text-green-500">¡Copiado!</span>}
         </>
 
     );
