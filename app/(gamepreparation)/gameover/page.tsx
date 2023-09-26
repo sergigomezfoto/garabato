@@ -74,17 +74,19 @@ const GameOver = () => {
         <>
             {load ? (
                 <>
-                    <h1 className="my-2 text-xl"><strong>Lista de clasificación</strong></h1>
-                    <div className="overflow-auto h-80 m-2">
-                        {playersOrder.map((player, index) => (
-                            <div key={index} className="relative w-60 bg-white rounded-lg border border-stone-600 my-2 p-1">
-                                <div className={`top-1 right-1 absolute w-7 text-center text-white text-xl rounded-full shadow-sm shadow-stone-500 border border-stone-600 ${colorRender(index)}`}><strong>{index + 1}</strong></div>
-                                <div key={index} className="flex items-center">
-                                    <SinglePlayer key={index} avatar={player.avatar} name={player.name} />
-                                    <p className="ml-4">Puntuación: {player.score}</p>
+                    <div>
+                        <h1 className="my-2 text-xl"><strong>Lista de clasificación</strong></h1>
+                        <div className="m-2">
+                            {playersOrder.map((player, index) => (
+                                <div key={index} className="relative w-60 bg-white rounded-lg border border-stone-600 my-2 p-1">
+                                    <div className={`top-1 right-1 absolute w-7 text-center text-white text-xl rounded-full shadow-sm shadow-stone-500 border border-stone-600 ${colorRender(index)}`}><strong>{index + 1}</strong></div>
+                                    <div key={index} className="flex items-center">
+                                        <SinglePlayer key={index} avatar={player.avatar} name={player.name} />
+                                        <p className="ml-4">Puntuación: {player.score}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                     <ButtonPromise onClick={handleOnClick}>
                         Volver a jugar
