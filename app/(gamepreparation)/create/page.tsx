@@ -35,13 +35,13 @@ export default function Create() {
   };
 
   const handleGoToGame = () => {
-    router.push(`/join/${word}`); 
+    router.push(`/join/${word}`);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center w-full">
       {!gameCreated ? (
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4"  autoComplete="off">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4" autoComplete="off">
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2 text-center" htmlFor="createID">
               Crea un sala
@@ -58,22 +58,21 @@ export default function Create() {
           </div>
           <Button text="Crear" type="submit" />
         </form>
-      ) : (<>
-        <div className="flex flex-col items-center space-y-2">
-          <h2 className="text-xl text-center"><span className="font-bold "> {window.location.origin}/join/{word}</span></h2>
-          {/* <p className="text-green-500 text-2xl">{word}</p> */}
-        </div>
-        <div className="py-6">
-          <CopyToClipboard textToCopy={`${window.location.origin}/join/${word}`} className="mr-2" />
-          <span className="mx-2"> o </span>
-          <SendRoomWhatsapp url={`${window.location.origin}/join/${word}`} />
-        </div>
+      ) : (
+        <>
+          <span className="text-sl text-center font-bold break-words lg:text-xl md:text-lg sm:text-base text-sm w-full"> {window.location.origin}/join/{word}</span>
 
-        <Button onClick={handleGoToGame}>
-          Ir a la sala <span className="font-bold " >{word}</span>
-        </Button>
+          <div className="py-4 flex gap-4 justify-center">
+            <CopyToClipboard textToCopy={`${window.location.origin}/join/${word}`} className="mr-2" />
 
-      </>
+            <SendRoomWhatsapp url={`${window.location.origin}/join/${word}`} />
+          </div>
+
+          <Button onClick={handleGoToGame}>
+            Ir a la sala <span className="font-bold " >{word}</span>
+          </Button>
+
+        </>
       )}
     </div>
   );
