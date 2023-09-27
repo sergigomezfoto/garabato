@@ -25,15 +25,15 @@ const calculatePoints = (players: Player[], drawerIdx: number, guessId: number, 
             console.log('segon if');
             const originalTitle = updatedPlayers[drawerIdx]?.phrase;
 
+            const count = updatedPlayers.filter((player) => player.guessVoted === updatedPlayers[guessAuthorIdx].guessMade).length;
             if (guessAuthorIdx !== drawerIdx) {
                 // Count how many players voted for the current guess
-                const count = updatedPlayers.filter((player) => player.guessVoted === updatedPlayers[guessAuthorIdx].guessMade).length;
                 // Give score to the guessAuthor
                 updatedPlayers[guessAuthorIdx].score = (updatedPlayers[guessAuthorIdx].score ?? 0) + 100 * count;
-            } else {
+            } else if (count) {
                 //if we are in the original title and someone gueesed it
                 console.log('tercer if');
-
+                
                 // Update score for drawer
                 updatedPlayers[drawerIdx].score = (updatedPlayers[drawerIdx].score ?? 0) + 100;
                 // Update score for players
