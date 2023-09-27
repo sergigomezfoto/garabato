@@ -6,6 +6,7 @@ import { db } from "@/firebase/firebase";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import SinglePlayer from "@/components/SinglePlayer";
+import getDataFromLocalStorage from "@/app/helpers/getFromLocalStorage";
 interface Player {
     name: string;
     score: number;
@@ -49,12 +50,33 @@ const GameOver = () => {
     }, []);
 
     const handleOnClick = async () => {
+        const storedData = getDataFromLocalStorage();
+        const sala = storedData ? storedData.sala : 'valorPerDefecte';  // Utilitza 'valorPerDefecte' si 'sala' no està definit
+        const apiUrl = `${window.location.origin}/api/deleteFromFirestore`;
+        // console.log('apiUrl', apiUrl);
+        // console.log(sala);
+        // console.log(JSON.stringify({ "docPath":sala }));
         try {
-            router.push("/");
+          const response = await fetch(apiUrl, {  // Substitueix 'teuEndpoint' amb la ruta correcta de la teva API
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "docPath":sala }),
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            console.log('Document i col·lecció esborrats amb èxit:', data);         
+          } else {
+            console.log('Error esborrant document i col·lecció:', data);
+          }
+          router.push("/");
         } catch (error) {
-            console.error(error);
-            throw error;
+          console.error('Hi ha hagut un error amb la petició:', error);
+          router.push("/");
         }
+
     }
 
     const colorRender = (index: number): string => {

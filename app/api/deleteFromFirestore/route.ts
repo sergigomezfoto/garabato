@@ -77,14 +77,14 @@ export const POST = async (req: Request) => {
         const { docPath,  batchSize = 10 }: { docPath: string;  batchSize: number } = body;
         try {
             await deleteDocumentAndCollection(db, docPath,  batchSize);
-            return NextResponse.json({ message: 'Document i col·lecció esborrats amb èxit' });
+            return NextResponse.json({ message: 'Document i col·lecció esborrats amb èxit'}, { status: 200 });
           } catch (error) {
       
-            return NextResponse.json({ message: `Error esborrant document i col·lecció: ${error}` });
+            return NextResponse.json({ message: `Error esborrant document i col·lecció: ${error}` }, { status: 500 });
         }
     } else {
 
-        return NextResponse.json({ message: 'Mètode no permès' });
+        return NextResponse.json({ message: 'Mètode no permès' }, { status: 405 });
 
     }
 };
