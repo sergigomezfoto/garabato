@@ -1,10 +1,11 @@
 import "./globals.css";
 import { Cabin_Sketch } from "next/font/google";
 import type { Metadata } from "next";
+import BackgroundMusic from "@/components/BackgroundMusic";
 const cabinSketch = Cabin_Sketch({ weight: "400", subsets: ["latin"] });
 export const metadata: Metadata = {
 	title: "Garabato",
-	description: "The drawing game",
+	description: "¡Pinta y colorea!",
 	viewport: {
 		width: "device-width",
 		initialScale: 1,
@@ -29,7 +30,7 @@ export default function RootLayout({
 					<div className="wrapper">
 						<header>
 							Garabato
-							{/*<BackgroundMusic audioFile="/DoodleFitSongShort.mp3" />*/}
+							<BackgroundMusic audioFile="/DoodleFitSongShort.mp3" />
 						</header>
 
 						<main>

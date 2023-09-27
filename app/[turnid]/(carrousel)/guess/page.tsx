@@ -8,6 +8,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import SinglePlayer from "@/components/SinglePlayer";
 
 const GuessDrawing = () => {
 	const [myTurn, setMyTurn] = useState<any>();
@@ -19,7 +20,12 @@ const GuessDrawing = () => {
 	const [players, setPlayers] = useState<any>();
 	const [actionList, setActionList] = useState<any>();
 	const [currentPlayer, setCurrentPlayer] = useState<{
-		playerFields: { name: string; drawing: string; turnId: number };
+		playerFields: {
+			name: string;
+			drawing: string;
+			turnId: number;
+			avatar: string;
+		};
 	} | null>(null);
 	const [guess, setGuess] = useState("");
 
@@ -91,14 +97,18 @@ const GuessDrawing = () => {
 			{currentPlayer ? (
 				actionStatus === false ? (
 					<div className="flex flex-col items-center space-y-2">
-						<h1>Este es el dibujo de {currentPlayer.playerFields.name}.</h1>
+						<h1>Este es el dibujo de:</h1>
+						<SinglePlayer
+							avatar={currentPlayer.playerFields.avatar}
+							name={currentPlayer.playerFields.name}
+						/>
 						<img
 							src={currentPlayer.playerFields.drawing}
 							alt="Dibujo"
-							className="m-5"
+							className="m-5 max-h-[50vh]"
 						/>
 						<h1>Descríbelo con pocas palabras.</h1>
-						<form onSubmit={handleSubmit}>
+						<form onSubmit={handleSubmit} className="flex flex-wrap justify-center items-center">
 							<input
 								className="m-3"
 								type="text"
@@ -111,8 +121,8 @@ const GuessDrawing = () => {
 							/>
 							<button
 								type="submit"
-								className="rounded-full shadow-lg px-1 py-0.5"
-								style={{ backgroundColor: "#FFB6C1" }}
+								className="rounded-full shadow-lg px-2 py-1 bg-[#FFB6C1] hover:bg-[#FF94A9]"
+								
 							>
 								¡Hecho!
 							</button>
@@ -122,7 +132,7 @@ const GuessDrawing = () => {
 					<ProgressBar
 						totalPlayers={players.length}
 						playersReady={actionList.length + 1}
-						text="Espera a que todos los jugadores envien su palabra."
+						text="Los jugadores estan adivinando lo que opinan del dibujo, espera a que todos terminen."
 					/>
 				)
 			) : (

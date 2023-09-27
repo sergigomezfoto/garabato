@@ -6,6 +6,7 @@ import { db } from "@/firebase/firebase";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import SinglePlayer from "@/components/SinglePlayer";
+import getDataFromLocalStorage from "@/app/helpers/getFromLocalStorage";
 interface Player {
     name: string;
     score: number;
@@ -49,12 +50,33 @@ const GameOver = () => {
     }, []);
 
     const handleOnClick = async () => {
+        const storedData = getDataFromLocalStorage();
+        const sala = storedData ? storedData.sala : 'valorPerDefecte';  // Utilitza 'valorPerDefecte' si 'sala' no està definit
+        const apiUrl = `${window.location.origin}/api/deleteFromFirestore`;
+        // console.log('apiUrl', apiUrl);
+        // console.log(sala);
+        // console.log(JSON.stringify({ "docPath":sala }));
         try {
-            router.push("/");
+          const response = await fetch(apiUrl, { 
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "docPath":sala }),
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            console.log('Document i col·lecció esborrats amb èxit:', data);         
+          } else {
+            console.log('Error esborrant document i col·lecció:', data);
+          }
+          router.push("/");
         } catch (error) {
-            console.error(error);
-            throw error;
+          console.error('Hi ha hagut un error amb la petició:', error);
+          router.push("/");
         }
+
     }
 
     const colorRender = (index: number): string => {
@@ -74,14 +96,14 @@ const GameOver = () => {
         <>
             {load ? (
                 <>
-                    <h1 className="my-2 text-xl"><strong>Lista de clasificación</strong></h1>
-                    <div className="overflow-auto h-80 m-2">
+                    <div className="mb-3">
+                        <h1 className="ml-1 mb-4 text-xl"><strong>Lista de clasificación</strong></h1>
                         {playersOrder.map((player, index) => (
-                            <div key={index} className="relative w-60 bg-white rounded-lg border border-stone-600 my-2 p-1">
+                            <div key={index} className="pl-2 relative w-60 bg-white rounded-lg border border-stone-600 my-2 p-1">
                                 <div className={`top-1 right-1 absolute w-7 text-center text-white text-xl rounded-full shadow-sm shadow-stone-500 border border-stone-600 ${colorRender(index)}`}><strong>{index + 1}</strong></div>
                                 <div key={index} className="flex items-center">
                                     <SinglePlayer key={index} avatar={player.avatar} name={player.name} />
-                                    <p className="ml-4">Puntuación: {player.score}</p>
+                                    <p className="pt-2 ml-4">Puntuación: {player.score}</p>
                                 </div>
                             </div>
                         ))}
