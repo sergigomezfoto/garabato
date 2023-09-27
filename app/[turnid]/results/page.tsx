@@ -128,7 +128,7 @@ const ShowPartialResults = () => {
 										<div className="text-red-500 font-medium mt-4">
 											<ul className="list-none space-y-2">
 												{players
-													.filter(player => player.guessVoted === players.find(p => p.turnId === guessId)?.guessMade)
+													.filter(player => player.guessVoted === players[drawerIdx].phrase)
 													.map((player, index) => (
 														<li key={index} className="mb-1 text-lg font-medium">
 															{player.name} adivinó el titulo original!
