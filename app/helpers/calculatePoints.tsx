@@ -11,8 +11,8 @@ const calculatePoints = (players: Player[], drawerIdx: number, guessId: number, 
 
 
 
-    // Copy the players array to make changes
-    const updatedPlayers = [...players];
+    // Hard Copy the players array to make changes
+    const updatedPlayers: Player[] = JSON.parse(JSON.stringify(players));
 
     if (drawerIdx !== null && guessId !== null) {
         console.log('primer if');
