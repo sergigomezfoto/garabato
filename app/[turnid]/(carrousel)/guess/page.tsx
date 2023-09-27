@@ -105,10 +105,10 @@ const GuessDrawing = () => {
 						<img
 							src={currentPlayer.playerFields.drawing}
 							alt="Dibujo"
-							className="m-5"
+							className="m-5 max-h-[50vh]"
 						/>
 						<h1>Descríbelo con pocas palabras.</h1>
-						<form onSubmit={handleSubmit}>
+						<form onSubmit={handleSubmit} className="flex flex-wrap justify-center items-center">
 							<input
 								className="m-3"
 								type="text"
@@ -121,8 +121,8 @@ const GuessDrawing = () => {
 							/>
 							<button
 								type="submit"
-								className="rounded-full shadow-lg px-1 py-0.5"
-								style={{ backgroundColor: "#FFB6C1" }}
+								className="rounded-full shadow-lg px-2 py-1 bg-[#FFB6C1] hover:bg-[#FF94A9]"
+								
 							>
 								¡Hecho!
 							</button>
