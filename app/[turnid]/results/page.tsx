@@ -21,6 +21,7 @@ const ShowPartialResults = () => {
 	const [showPartialResults, setShowPartialResults] = useState(false);
 	const [drawerIdx, setDrawerIdx] =useState<number|null>(null)
 	const [turnOrder, setTurnOrder] = useState<number[]>([]);
+	const [rounds, setRounds] = useState<number>(1)
 
 	const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 	
@@ -64,22 +65,21 @@ const ShowPartialResults = () => {
 		if (turnOrder.length > 0 && drawerIdx !== null && guessId !== null) {
 			const delay_ms = 5000
 			const currentIndex = turnOrder.findIndex(id => id === guessId);
-
+			const nextIndex = (currentIndex + 1)
+			
 			console.log(`Results: entered interval useEffect!`)
 		
 			const iterateGuesses = async () => {
-
-				if (currentIndex === (players.length)) {
+				console.log(`Results - nextIndex is: ${nextIndex} , players.length is ${players.length}`)
+				if (rounds === (players.length+1)) {
 					// Navigate to next drawing votes
 					if (players.length > currentTurnId + 1){
-						await delay(delay_ms)
 						console.log("Navigating to next guess")	
 						await deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
 						router.push(`/${currentTurnId + 1}/guess`);
 						return 
 					}
 					else {
-						await delay(delay_ms)
 						console.log("Navigating to final results")
 						await deleteGuessesAndVotes(players, sala, players[drawerIdx].turnId)
 						router.push(`/gameover`)
@@ -90,17 +90,17 @@ const ShowPartialResults = () => {
 				console.log(`Results: interval points useEffect executed: guessId: ${guessId}}`)
 				const {updatedPlayers} = calculatePoints(players, drawerIdx, guessId, setPlayers);
 				updatePlayersResults(updatedPlayers, sala)
-
+				await delay(1000);
 				setShowPartialResults(true);
 				await delay(delay_ms);
 
 				setShowPartialResults(false);
-				await delay(1000);
+				
 				// Update the current index for the next iteration
 				
-				const nextIndex = (currentIndex + 1)
 				const nextGuessId = turnOrder[nextIndex];
 				setGuessId(nextGuessId)
+				setRounds(round => round + 1)
 			};
 
 			iterateGuesses();
@@ -109,7 +109,7 @@ const ShowPartialResults = () => {
 				console.log(`Component is unmounting.`);
 			}
 	  	}
-	}, [turnOrder, drawerIdx, guessId]);
+	}, [turnOrder, drawerIdx, rounds]);
 	
 
 
@@ -133,8 +133,8 @@ const ShowPartialResults = () => {
                                         </li>
                                     ))}
                             </ul>
-                            <p>Puntos para jugador: 100</p>
-                            <p>Points para el dibujante: 100</p>
+                            <p>Puntos para adivino: 100</p>
+                            <p>Points para el artista: 100</p>
                         </div>
                     ) : (
                         <>
