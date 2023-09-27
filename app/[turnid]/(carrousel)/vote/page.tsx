@@ -115,7 +115,7 @@ const VoteDrawing = () => {
 						<img
 							src={currentPlayer.playerFields.drawing}
 							alt="Dibujo"
-							className="m-5"
+							className="m-5 max-h-[50vh]"
 						/>
 						<h1>Vota lo que crees que es.</h1>
 
