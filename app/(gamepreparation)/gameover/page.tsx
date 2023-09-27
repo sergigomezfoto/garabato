@@ -57,7 +57,7 @@ const GameOver = () => {
         // console.log(sala);
         // console.log(JSON.stringify({ "docPath":sala }));
         try {
-          const response = await fetch(apiUrl, {  // Substitueix 'teuEndpoint' amb la ruta correcta de la teva API
+          const response = await fetch(apiUrl, { 
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
