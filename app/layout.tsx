@@ -5,7 +5,7 @@ import BackgroundMusic from "@/components/BackgroundMusic";
 const cabinSketch = Cabin_Sketch({ weight: "400", subsets: ["latin"] });
 export const metadata: Metadata = {
 	title: "Garabato",
-	description: "The drawing game",
+	description: "¡Pinta y colorea!",
 	viewport: {
 		width: "device-width",
 		initialScale: 1,
