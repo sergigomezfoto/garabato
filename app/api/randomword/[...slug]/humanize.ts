@@ -202,17 +202,40 @@ const normalizeInteriorWordCase = (input: string, probability: number): string =
     return newWords.join(" ");
 };
 
+const addRandomLetter = (input: string, probability: number): string => {
+    if (Math.random() >= probability || input.length < 3) {
+        return input;
+    }
+
+    const words = input.split(" ");
+    const randomWordIndex = Math.floor(Math.random() * words.length);
+    const randomWord = words[randomWordIndex];
+
+    if (randomWord.length < 2) {
+        return input;
+    }
+
+    const randomPosition = Math.floor(Math.random() * (randomWord.length - 1)) + 1;
+    const randomLetter = String.fromCharCode(97 + Math.floor(Math.random() * 26)); // a-z
+
+    const newWord = randomWord.slice(0, randomPosition) + randomLetter + randomWord.slice(randomPosition);
+    words[randomWordIndex] = newWord;
+
+    return words.join(" ");
+};
+
 
 const humanizeString = (input: string): string => {
     const transformations = [
         { func: normalizeInteriorWordCase, prob: 0.6 },
         { func: changeFirstLetter, prob: 0.6 },
-        { func: togglePeriod, prob: 0.6 },
         { func: removeRandomAccent, prob: 0.5 },
         { func: substituteLettersSpanish, prob: 0.4 },
+        { func: addRandomLetter, prob: 0.3 },
         { func: duplicateRandomLetter, prob: 0.1 },
         { func: removeSingleSpace, prob: 0.08 },
-        { func: addSingleSpace, prob: 0.08 }
+        { func: addSingleSpace, prob: 0.08 },
+        { func: togglePeriod, prob: 0.06 },
     ];
 
     return transformations.reduce((acc, { func, prob }) => func(acc, prob), input);
