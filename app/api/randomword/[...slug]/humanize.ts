@@ -232,9 +232,9 @@ const humanizeString = (input: string): string => {
         { func: removeRandomAccent, prob: 0.5 },
         { func: substituteLettersSpanish, prob: 0.4 },
         { func: addRandomLetter, prob: 0.3 },
-        { func: duplicateRandomLetter, prob: 0.1 },
+        { func: duplicateRandomLetter, prob: 0.08 },
         { func: removeSingleSpace, prob: 0.08 },
-        { func: addSingleSpace, prob: 0.08 },
+        { func: addSingleSpace, prob: 0.06 },
         { func: togglePeriod, prob: 0.06 },
     ];
 
