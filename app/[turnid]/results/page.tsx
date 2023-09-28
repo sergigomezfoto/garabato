@@ -125,13 +125,17 @@ const ShowPartialResults = () => {
 							{guessId !== null && (
 								<>
 									{drawerIdx !== null && guessId === players[drawerIdx]?.turnId ? (
-										<div className="text-red-500 font-medium mt-4">
+										<div className="text-green-800 font-medium mt-4">
+											<h1>Título original: </h1>
+											<h2 className="text-center text-2xl font-semibold mb-2 bg-gray-100 border border-gray-300 rounded shadow-inner p-4">
+												{players[drawerIdx]?.phrase}
+											</h2>
 											<ul className="list-none space-y-2">
 												{players
 													.filter(player => player.guessVoted === players[drawerIdx].phrase)
 													.map((player, index) => (
 														<li key={index} className="mb-1 text-lg font-medium">
-															{player.name} adivinó el titulo original!
+															{player.name} adivinó el título original!
 														</li>
 													))}
 											</ul>
@@ -143,7 +147,7 @@ const ShowPartialResults = () => {
 											<p className="text-lg italic mb-4">
 												{players.find(player => player.turnId === guessId)?.name} intentó engañaros con:
 											</p>
-											<h2 className="text-2xl font-semibold mb-2">
+											<h2 className="text-center text-2xl font-semibold mb-2 bg-gray-100 border border-gray-300 rounded shadow-inner p-4">
 												{players.find(player => player.turnId === guessId)?.guessMade}
 											</h2>
 											<h3 className="text-xl font-medium mb-3">Los siguientes jugadores cayeron en la trampa:</h3>
