@@ -228,7 +228,7 @@ const addRandomLetter = (input: string, probability: number): string => {
 const humanizeString = (input: string): string => {
     const transformations = [
         { func: normalizeInteriorWordCase, prob: 0.6 },
-        { func: changeFirstLetter, prob: 0.6 },
+        { func: changeFirstLetter, prob: 0.7 },
         { func: removeRandomAccent, prob: 0.5 },
         { func: substituteLettersSpanish, prob: 0.4 },
         { func: addRandomLetter, prob: 0.3 },
