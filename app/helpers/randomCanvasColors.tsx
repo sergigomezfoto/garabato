@@ -58,7 +58,7 @@ const randomCanvasColors = (): [string, string] => {
     }
 
     // Ajusta color2 per garantir que sigui més clar si color1 és massa fosc
-    const targetLuminance = MIN_LUMINANCE + 30; // Aquí pots ajustar el valor desitjat
+    const targetLuminance = MIN_LUMINANCE + 30; // 30 és un valor arbitrari
     let color2 = generateColor2(color1);
     if (calculateLuminance(color2) < targetLuminance) {
         console.log('entro aquí');
