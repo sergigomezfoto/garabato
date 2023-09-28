@@ -1,6 +1,6 @@
 "use client";
 
-import Timer from "@/components/Timer";
+import Timer from "@/components/notused/Timer";
 import { usePathname, useRouter, useParams } from "next/navigation";
 
 interface CarrouselLayoutProps {

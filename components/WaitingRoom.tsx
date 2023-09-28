@@ -35,7 +35,6 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
 
 
   useEffect(() => {
-    console.log('WaitingRoom: useEffect');
     const salaRef = doc(db, 'grabatoTest', sala);
     const unsubscribe = onSnapshot(salaRef, (docSnapshot) => {
       if (docSnapshot.exists() && docSnapshot.data()?.closedRoom) {
@@ -43,7 +42,6 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({ sala, isMaster }) => {
       }
     });
     return () => {
-      console.log('WaitingRoom: useEffect return');
       unsubscribe()
     };
   }, [router, sala]);

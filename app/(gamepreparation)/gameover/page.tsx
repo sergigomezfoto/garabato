@@ -14,6 +14,7 @@ interface Player {
     drawing: string;
     phrase: string;
     turnId: number;
+    totalScore: number;
 }
 
 const GameOver = () => {
@@ -36,9 +37,10 @@ const GameOver = () => {
                         drawing: doc.data().drawing,
                         phrase: doc.data().phrase,
                         turnId: doc.data().turnId,
+                        totalScore: doc.data().totalScore,
                     }));
                     console.log('not order', allPlayers);
-                    const sortedList = [...allPlayers].sort((a, b) => (a.score > b.score ? 1 : a.score < b.score ? -1 : 0)).reverse();
+                    const sortedList = [...allPlayers].sort((a, b) => (a.totalScore > b.totalScore ? 1 : a.totalScore < b.totalScore ? -1 : 0)).reverse();
                     setPlayersOrder(sortedList);
                     setLoad(true);
                     console.log("sortedList", sortedList);
@@ -103,7 +105,7 @@ const GameOver = () => {
                                 <div className={`top-1 right-1 absolute w-7 text-center text-white text-xl rounded-full shadow-sm shadow-stone-500 border border-stone-600 ${colorRender(index)}`}><strong>{index + 1}</strong></div>
                                 <div key={index} className="flex items-center">
                                     <SinglePlayer key={index} avatar={player.avatar} name={player.name} />
-                                    <p className="pt-2 ml-4">Puntuación: {player.score}</p>
+                                    <p className="pt-2 ml-4">Puntuación: {player.totalScore}</p>
                                 </div>
                             </div>
                         ))}

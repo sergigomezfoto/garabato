@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import data from '../data.json';
+import humanizeString from './humanize';
 
 const getRandomIndex = (array: string[]) => {
     return Math.floor(Math.random() * array.length);
@@ -67,7 +68,7 @@ export const GET = async (req: Request, { params }: { params: { slug: string } }
             usedPersons.add(randomPerson);
             usedActions.add(randomAction);
             usedPlaces.add(randomPlace);
-            phrases.push(randomPhrase);
+            phrases.push(humanizeString(randomPhrase));
         }
         return NextResponse.json({ phrases: phrases });
     } catch (error) {

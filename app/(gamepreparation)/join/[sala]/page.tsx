@@ -56,7 +56,7 @@ const JoinPage: React.FC<JoinPageProps> = ({ params }) => {
 
 
   if (salaExists === null) {
-    return <div className="flex flex-col items-center justify-center">Comprovando sala...</div>;
+    return <div className="flex flex-col items-center justify-center">Comprobando sala...</div>;
   }
   if (salaExists === false) {
     return <div className="flex flex-col items-center justify-center text-red-500">La sala no existe</div>;
